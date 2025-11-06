@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sneaker Stud | Redefine Your Stride</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    
+    <script src="components/navbar.js"></script> 
+    <script src="components/footer.js"></script>
+    <script src="components/product-card.js"></script> 
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0A1933', // Deep Navy Blue
+                        secondary: '#ffffff', // White
+                        accent: '#3B82F6' // Bright Sky Blue (for contrast/action)
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'], // Modern sans-serif font
+                        display: ['Oswald', 'sans-serif'], // For bold headlines
+                    },
+                    keyframes: {
+                        slideInLeft: {
+                            '0%': { transform: 'translateX(-100%)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' },
+                        },
+                        slideInRight: {
+                            '0%': { transform: 'translateX(100%)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' },
+                        },
+                        fadeInUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        scaleIn: {
+                            '0%': { transform: 'scale(0.8)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' },
+                        }
+                    },
+                    animation: {
+                        slideInLeft: 'slideInLeft 1s ease-out forwards',
+                        slideInRight: 'slideInRight 1s ease-out forwards',
+                        fadeInUp: 'fadeInUp 0.8s ease-out forwards',
+                        scaleIn: 'scaleIn 0.8s ease-out forwards',
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-secondary text-primary font-sans antialiased">
+    
+    <custom-navbar></custom-navbar>
+
+    <section class="relative h-screen overflow-hidden flex items-center bg-primary">
+    <div class="absolute inset-0">
+        <img src="item55.png" alt="Hero Background Image" class="absolute inset-0 w-full h-full object-cover">
+        
+        <div class="absolute inset-0 bg-primary/70"></div> 
+    </div>
+    <div class="relative z-10 container mx-auto px-6 flex flex-col justify-center h-full">
+        <p class="text-xl md:text-2xl font-semibold text-accent mb-4 uppercase tracking-wider animate-fadeInUp" style="animation-delay: 0.2s;">
+            Experience The Edge
+        </p>
+        <h1 class="text-7xl sm:text-8xl lg:text-[10rem] font-extrabold text-white leading-none mb-8 font-display animate-slideInLeft" style="animation-delay: 0.4s; text-shadow: 0 5px 20px rgba(0,0,0,0.8);">
+            NEXT <span class="text-accent block lg:inline ml-0 lg:ml-8">GEN</span>
+        </h1>
+        <a href="products.html" class="bg-accent hover:bg-blue-600 text-white font-black py-5 px-16 rounded-full text-xl uppercase transition-all duration-300 transform hover:scale-105 shadow-2xl tracking-wider inline-block animate-fadeInUp" style="animation-delay: 0.8s;">
+            Shop The Drop
+        </a>
+    </div>
+</section>
+
+    <section class="py-24 bg-secondary">
+        <div class="container mx-auto px-6">
+            <h2 class="text-6xl font-extrabold text-center mb-20 uppercase text-primary font-display animate-fadeInUp">
+                DEFINE YOUR <span class="text-accent">PATH</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="relative group h-[550px] overflow-hidden rounded-3xl shadow-3xl lg:order-1 animate-slideInLeft">
+                    <img src="item6.jpg" alt="Lifestyle Sneakers" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/40 to-transparent flex flex-col justify-end p-10">
+                        <h3 class="text-5xl font-black text-white uppercase tracking-wider mb-4 font-display">LIFESTYLE</h3>
+                        <p class="text-lg text-gray-200 mb-6">Unmatched comfort, iconic designs. For the street and beyond.</p>
+                        <a href="/lifestyle" class="inline-flex items-center text-accent hover:text-white font-bold text-lg group-hover:underline transition-colors">
+                            View Collection <i data-feather="arrow-right" class="ml-2 w-6 h-6 transform group-hover:translate-x-2 transition-transform"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="grid grid-rows-2 gap-10 lg:order-2 animate-slideInRight">
+                    <div class="relative group h-[260px] overflow-hidden rounded-3xl shadow-2xl">
+                        <img src="item5.jpg" alt="Running Shoes" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-primary/70 via-primary/30 to-transparent flex flex-col justify-end p-8">
+                            <h3 class="text-4xl font-bold text-white uppercase tracking-wider mb-3 font-display">PERFORMANCE</h3>
+                            <a href="/running" class="inline-flex items-center text-accent hover:text-white font-semibold group-hover:underline transition-colors">
+                                Shop Gear <i data-feather="arrow-right" class="ml-2 w-5 h-5 transform group-hover:translate-x-2 transition-transform"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="relative group h-[260px] overflow-hidden rounded-3xl shadow-2xl">
+                        <img src="item7.jpg" alt="Basketball Shoes" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-primary/70 via-primary/30 to-transparent flex flex-col justify-end p-8">
+                            <h3 class="text-4xl font-bold text-white uppercase tracking-wider mb-3 font-display">BASKETBALL</h3>
+                            <a href="/basketball" class="inline-flex items-center text-accent hover:text-white font-semibold group-hover:underline transition-colors">
+                                Own The Court <i data-feather="arrow-right" class="ml-2 w-5 h-5 transform group-hover:translate-x-2 transition-transform"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="new-releases" class="py-24 bg-gray-100">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16">
+                <h2 class="text-6xl font-extrabold uppercase text-primary mb-6 md:mb-0 font-display animate-fadeInUp">
+                    THE LATEST <span class="text-accent">DROPS</span>
+                </h2>
+                <div class="flex flex-wrap gap-3 animate-fadeInUp" style="animation-delay: 0.2s;">
+                    <button class="filter-btn text-base px-6 py-3 rounded-full bg-primary text-white transition-all duration-300 shadow-lg hover:shadow-xl active" data-filter="all">All Drops</button>
+                    <button class="filter-btn text-base px-6 py-3 rounded-full border border-gray-300 hover:border-accent text-primary transition-all duration-300 hover:bg-gray-200" data-filter="running">Running</button>
+                    <button class="filter-btn text-base px-6 py-3 rounded-full border border-gray-300 hover:border-accent text-primary transition-all duration-300 hover:bg-gray-200" data-filter="lifestyle">Lifestyle</button>
+                    <button class="filter-btn text-base px-6 py-3 rounded-full border border-gray-300 hover:border-accent text-primary transition-all duration-300 hover:bg-gray-200" data-filter="basketball">Basketball</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-12" id="products-grid">
+                </div>
+
+            <div class="text-center mt-20 animate-fadeInUp" style="animation-delay: 0.4s;">
+                <a href="products.html" class="bg-primary hover:bg-gray-800 text-white font-bold py-4 px-12 rounded-full text-lg uppercase transition-all duration-300 shadow-xl transform hover:scale-[1.02] inline-flex items-center group">
+                    VIEW ALL PRODUCTS
+                    <i data-feather="arrow-right" class="w-6 h-6 ml-3 transition-transform group-hover:translate-x-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-28 bg-primary text-white overflow-hidden">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                
+                <div class="lg:w-1/2 order-2 lg:order-1 animate-slideInLeft">
+                    <h2 class="text-6xl font-extrabold mb-8 uppercase leading-tight text-accent font-display">
+                        ENGINEERED FOR <span class="block">PEAK PERFORMANCE</span>
+                    </h2>
+                    <p class="text-xl font-light mb-10 text-gray-300 leading-relaxed">
+                        Every Sneaker Stud creation is a testament to innovation. We fuse cutting-edge biomechanics with artisanal craftsmanship, ensuring unparalleled comfort, stability, and responsiveness. Step into a world where design meets dynamic function.
+                    </p>
+
+                    <ul class="space-y-6 mb-10">
+                        <li class="flex items-center gap-4 text-xl font-medium">
+                            <i data-feather="zap" class="text-accent w-7 h-7 flex-shrink-0"></i>
+                            <span>Responsive Cushioning: Adaptable support for explosive energy return.</span>
+                        </li>
+                        <li class="flex items-center gap-4 text-xl font-medium">
+                            <i data-feather="wind" class="text-accent w-7 h-7 flex-shrink-0"></i>
+                            <span>Adaptive Breathability: Advanced mesh for optimal airflow and comfort.</span>
+                        </li>
+                        <li class="flex items-center gap-4 text-xl font-medium">
+                            <i data-feather="activity" class="text-accent w-7 h-7 flex-shrink-0"></i>
+                            <span>Precision Traction: Multi-directional grip for superior control.</span>
+                        </li>
+                    </ul>
+
+                    <a href="/technology"
+                        class="inline-block bg-accent hover:bg-blue-600 text-white font-bold py-4 px-12 rounded-full text-lg uppercase transition-all duration-300 shadow-xl">
+                        Discover Innovation
+                    </a>
+                </div>
+
+                <div class="lg:w-1/2 order-1 lg:order-2 flex justify-center w-full animate-slideInRight" style="animation-delay: 0.2s;">
+                    <div class="max-w-xl w-full transform -skew-y-3 lg:-skew-y-0 lg:skew-x-3 overflow-hidden rounded-2xl shadow-3xl border-4 border-accent/70">
+                        <img src="item3.jpg" 
+                             alt="Performance Technology" 
+                             class="w-full h-auto object-cover transform skew-x-[-3deg] lg:skew-x-[-3deg] lg:skew-y-0"
+                             style="max-height: 550px; min-height: 400px; object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 bg-secondary">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-6xl font-extrabold mb-6 uppercase text-primary font-display animate-fadeInUp">
+                NEVER MISS <span class="text-accent">A DROP</span>
+            </h2>
+            <p class="text-xl md:text-2xl mb-12 text-gray-700 max-w-3xl mx-auto animate-fadeInUp" style="animation-delay: 0.2s;">
+                Join the inner circle for exclusive access to new releases, special events, and member-only benefits.
+            </p>
+            <form class="max-w-2xl mx-auto flex flex-col sm:flex-row gap-5 animate-fadeInUp" style="animation-delay: 0.4s;">
+                <input type="email" placeholder="YOUR EMAIL ADDRESS" class="flex-grow p-5 border-2 border-primary rounded-full focus:outline-none focus:ring-2 focus:ring-accent text-primary font-medium text-lg bg-gray-50 placeholder-gray-500" required>
+                <button type="submit" class="bg-accent hover:bg-blue-600 text-white font-bold py-5 px-12 rounded-full uppercase text-lg transition-colors shadow-xl">
+                    SIGN UP
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <custom-footer></custom-footer>
+
+    <div id="cart-modal" class="fixed inset-0 bg-primary bg-opacity-50 z-50 hidden flex justify-end">
+        <div class="bg-white w-full max-w-md h-full overflow-y-auto shadow-2xl">
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-8 border-b pb-4">
+                    <h3 class="text-3xl font-extrabold uppercase text-primary font-display">YOUR CART</h3>
+                    <button id="close-cart" class="text-gray-500 hover:text-primary p-2 transition-colors">
+                        <i data-feather="x" class="w-7 h-7"></i>
+                    </button>
+                </div>
+                <div id="cart-items" class="space-y-6">
+                    <p class="text-center text-gray-500 italic">Your bag is empty.</p>
+                </div>
+                <div class="border-t border-gray-200 mt-8 pt-8">
+                    <div class="flex justify-between mb-4 text-lg">
+                        <span>Subtotal</span>
+                        <span id="cart-subtotal" class="font-medium">R0.00</span>
+                    </div>
+                    <div class="flex justify-between mb-6 text-lg">
+                        <span>Shipping</span>
+                        <span class="font-medium text-green-600">FREE</span>
+                    </div>
+                    <div class="flex justify-between font-extrabold text-2xl border-t pt-6 mt-6 text-primary font-display">
+                        <span>ESTIMATED TOTAL</span>
+                        <span id="cart-total">R0.00</span>
+                    </div>
+                    <button class="w-full bg-accent hover:bg-blue-600 text-white font-bold py-5 px-4 rounded-full mt-8 uppercase transition-colors transform hover:scale-[1.01] shadow-xl">
+                        PROCEED TO CHECKOUT
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <a href="https://wa.me/27679692018" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="fixed bottom-8 right-8 bg-[#25D366] hover:bg-[#1DA851] text-white p-5 rounded-full shadow-2xl z-40 transition-all duration-300 transform hover:scale-110">
+        <i data-feather="message-circle" class="w-8 h-8"></i>
+    </a>
+    
+    <script src="script.js"></script>
+    <script>
+        // Initialize Feather icons
+        feather.replace();
+
+        // Basic script to handle filter button active state
+        document.addEventListener('DOMContentLoaded', () => {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    filterButtons.forEach(btn => {
+                        btn.classList.remove('bg-primary', 'text-white', 'shadow-lg', 'hover:shadow-xl', 'active');
+                        btn.classList.add('border', 'border-gray-300', 'text-primary', 'hover:border-accent', 'hover:bg-gray-200');
+                    });
+                    this.classList.add('bg-primary', 'text-white', 'shadow-lg', 'hover:shadow-xl', 'active');
+                    this.classList.remove('border', 'border-gray-300', 'text-primary', 'hover:border-accent', 'hover:bg-gray-200');
+                });
+            });
+
+            // Set 'All Drops' button as active by default on load
+            const allDropsButton = document.querySelector('.filter-btn[data-filter="all"]');
+            if (allDropsButton) {
+                allDropsButton.classList.add('bg-primary', 'text-white', 'shadow-lg', 'hover:shadow-xl', 'active');
+                allDropsButton.classList.remove('border', 'border-gray-300', 'text-primary', 'hover:border-accent', 'hover:bg-gray-200');
+            }
+        });
+    </script>
+</body>
+</html>

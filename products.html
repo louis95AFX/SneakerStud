@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products | Sneaker Stud</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+
+    <style>
+        /* This ensures no content forces the body wider than the screen */
+        body {
+            overflow-x: hidden;
+        }
+        /* Custom class for the filter button's active state */
+        .filter-btn.active {
+            /* Using Tailwind class names for configured colors */
+            color: #0A1933; /* Primary Navy Blue */
+            border-bottom: 2px solid #0A1933; 
+        }
+    </style>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    // --- CHANGED TO NAVY BLUE & WHITE THEME ---
+                    colors: {
+                        primary: '#0A1933', // Deep Navy Blue
+                        secondary: '#ffffff', // White
+                        accent: '#3B82F6' // Bright Sky Blue (for contrast/action)
+                    },
+                    spacing: {
+                        '128': '32rem',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-primary min-h-screen flex flex-col">
+
+    <custom-navbar></custom-navbar>
+
+    <main class="container mx-auto px-4 py-12 flex-grow">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-12 uppercase text-center text-primary">Our Latest Drops</h1>
+        
+        <div class="flex flex-wrap justify-center mb-10 border-b border-gray-200">
+            <button class="filter-btn active text-sm sm:text-base font-bold uppercase m-1 sm:mx-2 py-2 px-2 hover:text-accent transition-colors" data-filter="all">All Shoes</button>
+            <button class="filter-btn text-sm sm:text-base font-bold uppercase m-1 sm:mx-2 py-2 px-2 hover:text-accent transition-colors" data-filter="nike">Nike</button>
+            <button class="filter-btn text-sm sm:text-base font-bold uppercase m-1 sm:mx-2 py-2 px-2 hover:text-accent transition-colors" data-filter="adidas">Adidas</button>
+            <button class="filter-btn text-sm sm:text-base font-bold uppercase m-1 sm:mx-2 py-2 px-2 hover:text-accent transition-colors" data-filter="new balance">New Balance</button>
+            <button class="filter-btn text-sm sm:text-base font-bold uppercase m-1 sm:mx-2 py-2 px-2 hover:text-accent transition-colors" data-filter="steve madden">Steve Madden</button>
+        </div>
+
+        <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            </div>
+
+        <div id="pagination-container" class="flex justify-center space-x-2 mt-12">
+            </div>
+
+    </main>
+    
+    <div id="cart-modal" class="hidden fixed inset-0 z-50 bg-primary bg-opacity-50 justify-end">
+        <div class="bg-white w-full max-w-md h-full shadow-2xl p-6 flex flex-col transform transition-transform duration-300 translate-x-0">
+            
+            <div class="flex justify-between items-center border-b pb-4 mb-6">
+                <h2 class="text-3xl font-bold uppercase text-primary">Your Bag</h2>
+                <button id="close-cart" class="text-gray-500 hover:text-primary p-1">
+                    <i data-feather="x" class="w-7 h-7"></i>
+                </button>
+            </div>
+
+            <div id="cart-items" class="flex-grow space-y-6 overflow-y-auto pr-2">
+                </div>
+
+            <div class="pt-6 border-t mt-6">
+                <div class="flex justify-between text-lg font-medium mb-2">
+                    <span>Subtotal:</span>
+                    <span id="cart-subtotal" class="font-extrabold">R0.00</span>
+                </div>
+                <div class="flex justify-between text-lg font-medium mb-4">
+                    <span>Shipping:</span>
+                    <span class="font-bold text-green-600">FREE</span>
+                </div>
+                <div class="flex justify-between text-2xl font-bold mb-6">
+                    <span>Total:</span>
+                    <span id="cart-total" class="font-extrabold text-accent">R0.00</span>
+                </div>
+                
+                <button class="w-full bg-accent hover:bg-blue-600 text-white font-bold py-3 rounded-full text-xl uppercase transition-colors shadow-lg">
+                    Proceed to Checkout
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <custom-footer></custom-footer>
+
+
+    <script src="components.js"></script>
+    <script src="script.js"></script>
+
+</body>
+</html>
