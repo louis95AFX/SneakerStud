@@ -293,10 +293,10 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 2, name: "Nike Air Max 1", category: "Nike", price: 1399.00, originalPrice: 1599.00, image: "item33.jpg", isNew: false },
     { id: 3, name: "Nike Air Max", category: "Nike", price: 1199.00, originalPrice: 1399.00, image: "item34.jpg", isNew: true },
     { id: 4, name: "Nike", category: "Nike", price: 1199.00, originalPrice: 1199.00, image: "item35.jpg", isNew: true },
-    { id: 5, name: "Nike", category: "Nike", price: 1399.00, originalPrice: 1599.00, image: "item36.jpg", isNew: false },
-    { id: 6, name: "Nike", category: "Nike", price: 1299.00, originalPrice: 1499.00, image: "item37.jpg", isNew: false },
+    { id: 5, name: "Nike Orange", category: "Nike", price: 950.00, originalPrice: 1200.00, image: "item36.jpg", isNew: false },
+    { id: 6, name: "Nike Red", category: "Nike", price: 950.00, originalPrice: 1200.00, image: "item37.jpg", isNew: false },
     { id: 7, name: "Adidas", category: "Adidas", price: 950.00, originalPrice: 1200.00, image: "item38.jpg", isNew: false },
-    { id: 8, name: "Nike Dunk Low", category: "Nike", price: 1299.00, originalPrice: 1299.00, image: "item39.jpg", isNew: true },
+    { id: 8, name: "Nike Dunk Low Brown", category: "Nike", price: 950.00, originalPrice: 1200.00, image: "item39.jpg", isNew: true },
     { id: 9, name: "Nike Air Max Plus", category: "Nike", price: 1100.00, originalPrice: 1300.00, image: "item40.jpg", isNew: false },
     { id: 10, name: "Adidas SL 72", category: "Adidas", price: 1200.00, originalPrice: 1500.00, image: "item42.jpg", isNew: false },
 
@@ -759,6 +759,4 @@ setupSalePopup();
         let filteredByFilter = currentFilter === 'all'
             ? discountedProducts // Use the discounted array here
             : discountedProducts.filter(p => p.category.toLowerCase().trim() === currentFilter.toLowerCase().trim())};
-
-
 
