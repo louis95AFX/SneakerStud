@@ -266,14 +266,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Sample Product Data ---
     const allProducts = [
         { id: 1, name: "Nike Shox Unisex", category: "Nike", price: 1299.00, image: "item6.jpg", isNew: true },
-        { id: 2, name: "Nike White Shox", category: "Nike", price: 1299.00, image: "item8.jpg", isNew: false },
+        { id: 2, name: "Nike White Shox", category: "Nike", price: 1299.00,  originalPrice: 1200.00,image: "item8.jpg", isNew: false },
         { id: 3, name: "Puma Retro Red", category: "Puma", price: 1199.00, image: "item14.jpg", isNew: true },
         { id: 4, name: "Puma Black Suede", category: "Puma", price: 1199.00, image: "item21.jpg", isNew: true },
-        { id: 5, name: "Puma Blue Runner", category: "Puma", price: 1199.00, image: "item15.jpg", isNew: false },
+        { id: 5, name: "Puma Blue Runner", category: "Puma", price: 950.00, originalPrice: 1100.00, image: "item15.jpg", isNew: false },
         { id: 6, name: "Timberland Classic Boot", category: "Timberland", price: 2999.00, image: "item16.jpg", isNew: false },
         { id: 7, name: "Timberland Green Motion", category: "Timberland", price: 1299.00, image: "item17.jpg", isNew: false },
         { id: 8, name: "New Balance 550 White/Yellow", category: "New Balance", price: 1199.00, image: "item19.jpg", isNew: false },
-        { id: 9, name: "New Balance 550 Grey", category: "New Balance", price: 1199.00, image: "item20.jpg", isNew: false },
+        { id: 9, name: "New Balance 550 Grey", category: "New Balance", price: 1150.00, originalPrice: 1500.00, image: "item20.jpg", isNew: false },
         { id: 10, name: "Adidas Retro Trainer", category: "Adidas", price: 1199.00, image: "item11.jpg", isNew: false },
         { id: 11, name: "Steve Madden Sandal", category: "Steve Madden", price: 1199.00, image: "item2.jpg", isNew: true },
         { id: 12, name: "Black Lifestyle Sneaker", category: "Full Black", price: 1199.00, image: "item3.jpg", isNew: false },
@@ -617,10 +617,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const allProducts = [
     // Page 1
     { id: 1, name: "Nike Zoom Vomero Roam", category: "Nike", price: 900.00, originalPrice: 1299.00, image: "item6.jpg", isNew: true },
-    { id: 2, name: "Jordan 4 Retro", category: "Nike", price: 1099.00, originalPrice: 1299.00, image: "item8.jpg", isNew: false },
+    { id: 2, name: "Jordan 4 Retro", category: "Nike", price: 1150.00, originalPrice: 1500.00, image: "item8.jpg", isNew: false },
     { id: 3, name: "Nike Air Force 1 ", category: "Nike ", price: 999.00, originalPrice: 1199.00, image: "item14.jpg", isNew: true },
     { id: 4, name: "New Balance", category: "New Balance", price: 999.00, originalPrice: 1199.00, image: "item21.jpg", isNew: true },
-    { id: 5, name: "Nike Air Force 1", category: "Nike ", price: 999.00, originalPrice: 1199.00, image: "item15.jpg", isNew: false },
+    { id: 5, name: "Nike Air Force 1", category: "Nike ", price: 950.00, originalPrice: 1100.00, image: "item15.jpg", isNew: false },
     { id: 6, name: "Nike Air Max Furyosa", category: "Nike Mix", price: 2799.00, originalPrice: 2999.00, image: "item16.jpg", isNew: false },
     { id: 7, name: "Nike", category: "Nike White", price: 1099.00, originalPrice: 1299.00, image: "item17.jpg", isNew: false },
     { id: 8, name: "Nike Mix", category: "Nike Mix", price: 1199.00, originalPrice: 1399.00, image: "item18.jpg", isNew: true },
@@ -637,7 +637,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 7, name: "Nike", category: "Nike Mix", price: 1099.00, originalPrice: 1299.00, image: "item28.jpg", isNew: false },
     { id: 8, name: "Jordan 4 Retro", category: "Nike", price: 1099.00, originalPrice: 1299.00, image: "item29.jpg", isNew: true },
     { id: 9, name: "Nike Air Force 1 ", category: "Nike", price: 1299.00, originalPrice: 1499.00, image: "item30.jpg", isNew: false },
-    { id: 10, name: "New Balance", category: "New Balance ", price: 1399.00, originalPrice: 1599.00, image: "item31.jpg", isNew: false },
+    { id: 10, name: "New Balance", category: "New Balance ", price: 500.00, originalPrice: 750.00, image: "item31.jpg", isNew: false },
 
     // Page 3 - Prices updated with hypothetical originalPrice
     { id: 1, name: "Nike Air Max ", category: "Nike ", price: 1099.00, originalPrice: 1099.00, image: "item32.jpg", isNew: true },
@@ -646,18 +646,18 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 4, name: "Nike", category: "Nike", price: 1199.00, originalPrice: 1199.00, image: "item35.jpg", isNew: true },
     { id: 5, name: "Nike", category: "Nike", price: 1399.00, originalPrice: 1599.00, image: "item36.jpg", isNew: false },
     { id: 6, name: "Nike", category: "Nike", price: 1299.00, originalPrice: 1499.00, image: "item37.jpg", isNew: false },
-    { id: 7, name: "Adidas", category: "Adidas", price: 950.00, originalPrice: 1150.00, image: "item38.jpg", isNew: false },
+    { id: 7, name: "Adidas", category: "Adidas", price: 950.00, originalPrice: 1200.00, image: "item38.jpg", isNew: false },
     { id: 8, name: "Nike Dunk Low", category: "Nike", price: 1299.00, originalPrice: 1299.00, image: "item39.jpg", isNew: true },
     { id: 9, name: "Nike Air Max Plus", category: "Nike", price: 1100.00, originalPrice: 1300.00, image: "item40.jpg", isNew: false },
-    { id: 10, name: "Adidas SL 72", category: "Adidas", price: 1200.00, originalPrice: 1400.00, image: "item42.jpg", isNew: false },
+    { id: 10, name: "Adidas SL 72", category: "Adidas", price: 1200.00, originalPrice: 1500.00, image: "item42.jpg", isNew: false },
 
     // Page 4 - Prices updated with hypothetical originalPrice
     { id: 1, name: "Adidas Gazelle", category: "Adidas", price: 1099.00, originalPrice: 1299.00, image: "item41.jpg", isNew: true },
     { id: 2, name: "Nike Dunk Low ", category: "Nike ", price: 1299.00, originalPrice: 1499.00, image: "item43.jpg", isNew: false },
-    { id: 3, name: "Nike Air Force 1 Luxe", category: "Nike", price: 1150.00, originalPrice: 1150.00, image: "item44.jpg", isNew: true },
-    { id: 4, name: "Nike", category: "Nike", price: 1200.00, originalPrice: 1400.00, image: "item45.jpg", isNew: true },
-    { id: 5, name: "Timberland", category: "Timberland", price: 1199.00, originalPrice: 1399.00, image: "item46.jpg", isNew: false },
-    { id: 6, name: "Replay", category: "Replay", price: 1200.00, originalPrice: 1200.00, image: "item47.jpg", isNew: false },
+    { id: 3, name: "Nike Air Force 1 Luxe", category: "Nike", price: 1150.00, originalPrice: 1500.00, image: "item44.jpg", isNew: true },
+    { id: 4, name: "Nike", category: "Nike", price: 1200.00, originalPrice: 1800.00, image: "item45.jpg", isNew: true },
+    { id: 5, name: "Timberland", category: "Timberland", price: 1500.00, originalPrice: 2200.00, image: "item46.jpg", isNew: false },
+    { id: 6, name: "Replay", category: "Replay", price: 1200.00, originalPrice: 1800.00, image: "item47.jpg", isNew: false },
     { id: 7, name: "Nike", category: "Nike Black/Grey", price: 1250.00, originalPrice: 1450.00, image: "item48.jpg", isNew: false },
     { id: 8, name: "Converse", category: "Converse", price: 1050.00, originalPrice: 1250.00, image: "item49.jpg", isNew: true },
     { id: 9, name: "Lacoste", category: "Lacost Green", price: 1200.00, originalPrice: 1400.00, image: "item50.jpg", isNew: false },
@@ -666,11 +666,37 @@ document.addEventListener('DOMContentLoaded', () => {
     // Page 5 - Prices updated with hypothetical originalPrice
     { id: 1, name: "Converse All Star", category: "Converse", price: 1000.00, originalPrice: 1200.00, image: "item52.jpg", isNew: true },
     { id: 2, name: "New Balance ", category: "New Balance ", price: 1299.00, originalPrice: 1499.00, image: "item53.jpg", isNew: false },
-    { id: 3, name: "Nike", category: "Nike", price: 1150.00, originalPrice: 1350.00, image: "item54.jpg", isNew: true },
-    // Note: Items 4 is missing here, proceeding with 5 and 6.
+    { id: 3, name: "Nike Men’s Shox", category: "Nike", price: 1150.00, originalPrice: 1300.00, image: "item54.jpg", isNew: true },
+    { id: 4, name: "Ted Baker", category: "Ted Baker", price: 400.00, originalPrice: 1400.00, image: "item58.jpg", isNew: true },
     { id: 5, name: "Nike T-Shirt", category: "Nike T-Shirt", price: 150.00, originalPrice: 250.00, image: "item56.jpg", isNew: false },
     { id: 6, name: "Nike T-Shirt", category: "Nike T-Shirt", price: 150.00, originalPrice: 250.00, image: "item57.jpg", isNew: false },
+    { id: 7, name: "Nike Dunk Low Kids", category: "Nike", price: 500.00, originalPrice: 850.00, image: "item59.jpg", isNew: false },
+    { id: 8, name: "New Balance 550 ", category: "New Balance", price: 1000.00, originalPrice: 1300.00, image: "item60.jpg", isNew: true },
+    { id: 9, name: "Air Jordan 3 Retro ", category: "Nike", price: 1800.00, originalPrice: 2500.00, image: "item61.jpg", isNew: false },
+    { id: 10, name: "Kids Jordan Retro 4 ", category: "Nike", price: 600.00, originalPrice: 1000.00, image: "item62.jpg", isNew: false },
+
+
+        //page 6
+    { id: 1, name: "Nike Shox TL", category: "Nike", price: 1300.00, originalPrice: 1800.00, image: "item64.jpg", isNew: true },
+    { id: 2, name: "Nike Shox TL", category: "Nike White ", price: 1300.00, originalPrice: 1800.00, image: "item65.jpg", isNew: false },
+    { id: 3, name: "Nike Shox TL", category: "Nike Black", price: 1350.00, originalPrice: 1800.00, image: "item66.jpg", isNew: true },
+    { id: 4, name: "Nike Shox Z", category: "Nike", price: 1300.00, originalPrice: 1800.00, image: "item67.jpg", isNew: true },
+    { id: 5, name: "Nike Shox Z", category: "Nike", price: 1300.00, originalPrice: 1800.00, image: "item68.jpg", isNew: false },
+    { id: 6, name: "Nike Shox Z", category: "Nike", price: 1300.00, originalPrice: 1800.00, image: "item69.jpg", isNew: false },
+    { id: 7, name: "Nike Zoom Vomero Roam", category: "Nike", price: 1250.00, originalPrice: 1450.00, image: "item70.jpg", isNew: false },
+    { id: 8, name: "Kids Sky Jordan 1 ", category: "Nike", price: 500.00, originalPrice: 850.00, image: "item71.jpg", isNew: true },
+    { id: 9, name: "Nike", category: "Nike", price: 1150.00, originalPrice: 1400.00, image: "item1.jpg", isNew: false },
+    { id: 10, name: "New Balance ", category: "New Balance", price: 100.00, originalPrice: 1200.00, image: "item2.jpg", isNew: false },
+
+   //page 7
+    { id: 1, name: "Nike ", category: "Nike", price: 1000.00, originalPrice: 1200.00, image: "item3.jpg", isNew: true },
+    { id: 2, name: "Nike", category: "Nike White ", price: 1150.00, originalPrice: 1400.00, image: "item4.jpg", isNew: false },
+    { id: 3, name: "Adidas", category: "Adidas", price: 1050.00, originalPrice: 1300.00, image: "item7.jpg", isNew: false },
+
+  
 ];
+
+
     // --- DOM Elements ---
     const productsGrid = document.getElementById('products-grid');
     const filterButtons = document.querySelectorAll('.filter-btn');
