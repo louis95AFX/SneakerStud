@@ -881,7 +881,7 @@ function handleCheckout() {
 
   emailjs.send('service_n6cw895', 'template_vzwck3k', templateParams)
     .then(() => {
-      alert(`🎉 Thank you ${customerName}! Your order has been confirmed. A confirmation email has been sent to ${customerEmail}.`);
+      alert(`🎉 Thank you ${customerName}! Your order has been confirmed. An Invoice has been sent to ${customerEmail}.`);
 
       cart.length = 0;
       localStorage.setItem('cart', JSON.stringify(cart));
