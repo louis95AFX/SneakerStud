@@ -20,7 +20,11 @@
             border-bottom: 2px solid #0A1933; 
         }
     </style>
-    
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+  emailjs.init('Q3rj938-6Z_ura6aq');
+</script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -81,7 +85,7 @@
                     <span id="cart-subtotal" class="font-extrabold">R0.00</span>
                 </div>
                 <div class="flex justify-between mb-6 text-lg">
-                    <span>Shipping</span>
+                    <span>Service Fee</span>
                     <span id="cart-shipping" class="font-medium text-green-600">R10</span>
                 </div>
 
@@ -90,9 +94,10 @@
                     <span id="cart-total" class="font-extrabold text-accent">R0.00</span>
                 </div>
                 
-                <button class="w-full bg-accent hover:bg-blue-600 text-white font-bold py-3 rounded-full text-xl uppercase transition-colors shadow-lg">
+                <button id="proceedCheckout" class="w-full bg-accent hover:bg-blue-600 text-white font-bold py-3 rounded-full text-xl uppercase transition-colors shadow-lg">
                     Proceed to Checkout
                 </button>
+
             </div>
 
         </div>
