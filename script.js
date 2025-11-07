@@ -178,14 +178,18 @@ class ProductCard extends HTMLElement {
     }
 
     connectedCallback() {
+        // ... (Attributes and Badge Logic remain the same) ...
         const name = this.getAttribute('name') || 'New Performance Runner';
         const category = this.getAttribute('category') || 'Running';
         const price = this.getAttribute('price') || '150.00';
-        const originalPrice = this.getAttribute('original-price') || price; // Default to same price if missing
+        const originalPrice = this.getAttribute('original-price') || price;
         const image = this.getAttribute('image') || 'https://picsum.photos/id/42/400/300';
         
         const isNew = this.hasAttribute('new');
         const isDiscounted = parseFloat(originalPrice) > parseFloat(price);
+        
+        const originalPriceFixed = parseFloat(originalPrice).toFixed(2);
+        const priceFixed = parseFloat(price).toFixed(2);
 
         // --- Badge Logic ---
         let badge = '';
@@ -195,33 +199,31 @@ class ProductCard extends HTMLElement {
             badge = '<span class="absolute top-4 left-4 bg-accent text-secondary text-xs font-bold px-3 py-1 rounded-full uppercase z-10 shadow-lg">NEW</span>';
         }
 
-        // --- Price Display Logic ---
+        // --- Price Display Logic (Keeping the optimized font sizing from previous step) ---
         let priceHTML = '';
         if (isDiscounted) {
-            // Show both prices when discounted
             priceHTML = `
-                <div class="flex items-baseline space-x-2">
-<span class="text-sm text-gray-500 line-through" 
-      style="-webkit-text-stroke: 0.4px #000; text-decoration-thickness: 2px; text-decoration-color: #888888;">
-    R${parseFloat(originalPrice).toFixed(2)}
-</span>
-                    <span class="text-xl font-extrabold text-accent">R${parseFloat(price).toFixed(2)}</span>
+                <div class="flex items-baseline space-x-1">
+                    <span class="text-xs sm:text-sm text-gray-500 line-through" 
+                        style="-webkit-text-stroke: 0.4px #000; text-decoration-thickness: 2px; text-decoration-color: #888888;">
+                        R${originalPriceFixed}
+                    </span>
+                    <span class="text-lg sm:text-xl font-extrabold text-accent">R${priceFixed}</span>
                 </div>
             `;
         } else {
-            // If same price, show both neatly (no line-through)
             priceHTML = `
-                <div class="flex items-baseline space-x-2">
-<span class="text-sm text-gray-500 line-through" 
-      style="-webkit-text-stroke: 0.4px #000; text-decoration-thickness: 2px; text-decoration-color: #888888;">
-    R${parseFloat(originalPrice).toFixed(2)}
-</span>
-                    <span class="text-xl font-extrabold text-primary">R${parseFloat(price).toFixed(2)}</span>
+                <div class="flex items-baseline space-x-1">
+                    <span class="text-xs sm:text-sm text-gray-500 line-through" 
+                        style="-webkit-text-stroke: 0.4px #000; text-decoration-thickness: 2px; text-decoration-color: #888888;">
+                        R${originalPriceFixed}
+                    </span>
+                    <span class="text-lg sm:text-xl font-extrabold text-primary">R${priceFixed}</span>
                 </div>
             `;
         }
 
-        // --- Final Card HTML ---
+        // --- Final Card HTML (Key change is reducing mt-3 to mt-1) ---
         this.innerHTML = `
             <div class="product-card bg-secondary rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300 relative" data-category="${category.toLowerCase()}">
                 ${badge}
@@ -233,12 +235,12 @@ class ProductCard extends HTMLElement {
                     <p class="text-xs text-gray-500 uppercase font-medium">${category}</p>
                     <h3 class="text-lg font-bold text-primary truncate">${name}</h3>
                     
-                    <div class="flex justify-between items-center mt-3">
+                    <div class="flex justify-between items-center **mt-1**">
                         <div class="flex items-center">
                             ${priceHTML}
                         </div>
                         
-                        <button class="add-to-cart-btn bg-primary text-secondary rounded-full p-2 hover:bg-accent transition-colors shadow-lg" data-product-name="${name}" data-product-price="${price}">
+                        <button class="add-to-cart-btn bg-primary text-secondary rounded-full p-1.5 sm:p-2 hover:bg-accent transition-colors shadow-lg" data-product-name="${name}" data-product-price="${price}">
                             <i data-feather="shopping-cart" class="w-5 h-5"></i>
                         </button>
                     </div>
@@ -268,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
      { id: 1, name: "Nike Zoom Vomero Roam", category: "Nike", price: 1150.00, originalPrice: 1299.00, image: "item6.jpg", isNew: true },
     { id: 2, name: "Jordan 4 Retro", category: "Nike", price: 1150.00, originalPrice: 1500.00, image: "item8.jpg", isNew: false },
-    { id: 3, name: "Nike Air Force 1 ", category: "Nike ", price: 999.00, originalPrice: 1199.00, image: "item14.jpg", isNew: true },
+    { id: 3, name: "Nike Air Force 1 ", category: "Nike ", price: 950.00, originalPrice: 1100.00, image: "item14.jpg", isNew: true },
     { id: 4, name: "New Balance", category: "New Balance", price: 999.00, originalPrice: 1199.00, image: "item21.jpg", isNew: true },
     { id: 5, name: "Nike Air Force 1", category: "Nike ", price: 950.00, originalPrice: 1100.00, image: "item15.jpg", isNew: false },
     { id: 6, name: "Nike Air Max Furyosa", category: "Nike Mix", price: 2799.00, originalPrice: 2999.00, image: "item16.jpg", isNew: false },
@@ -759,5 +761,4 @@ setupSalePopup();
 
         let filteredByFilter = currentFilter === 'all'
             ? discountedProducts // Use the discounted array here
-
             : discountedProducts.filter(p => p.category.toLowerCase().trim() === currentFilter.toLowerCase().trim())};
