@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 7, name: "Nike Zoom Vomero Roam", category: "Nike", price: 1250.00, originalPrice: 1450.00, image: "item70.jpg", isNew: false },
     { id: 8, name: "Kids Sky Jordan 1 ", category: "Nike", price: 500.00, originalPrice: 850.00, image: "item71.jpg", isNew: true },
     { id: 9, name: "Nike", category: "Nike", price: 1150.00, originalPrice: 1400.00, image: "item1.jpg", isNew: false },
-    { id: 10, name: "New Balance ", category: "New Balance", price: 100.00, originalPrice: 1200.00, image: "item2.jpg", isNew: false },
+    { id: 10, name: "New Balance ", category: "New Balance", price: 1000.00, originalPrice: 1200.00, image: "item2.jpg", isNew: false },
 
    //page 7
     { id: 1, name: "Nike ", category: "Nike", price: 1000.00, originalPrice: 1200.00, image: "item3.jpg", isNew: true },
@@ -771,4 +771,5 @@ setupSalePopup();
 
         let filteredByFilter = currentFilter === 'all'
             ? discountedProducts // Use the discounted array here
+
             : discountedProducts.filter(p => p.category.toLowerCase().trim() === currentFilter.toLowerCase().trim())};
