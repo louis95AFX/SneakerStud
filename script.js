@@ -273,14 +273,14 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 6, name: "Nike Air Max Furyosa", category: "Nike Mix", price: 1200.00, originalPrice: 1800.00, image: "item16.jpg", isNew: false },
     { id: 7, name: "Nike", category: "Nike White", price: 1099.00, originalPrice: 1299.00, image: "item17.jpg", isNew: false },
     { id: 8, name: "Nike Mix", category: "Nike Mix", price: 1199.00, originalPrice: 1399.00, image: "item18.jpg", isNew: true },
-    { id: 9, name: "Nike", category: "Nike Green", price: 999.00, originalPrice: 1199.00, image: "item19.jpg", isNew: false },
+    { id: 9, name: "Nike Bailleli", category: "Nike", price: 999.00, originalPrice: 1199.00, image: "item19.jpg", isNew: false },
     { id: 10, name: "Adidas Forum Mod", category: "Adidas", price: 999.00, originalPrice: 1199.00, image: "item20.jpg", isNew: false },
 
     // Page 2 - Prices updated with hypothetical originalPrice
     { id: 1, name: "Nike", category: "Nike Green", price: 1199.00, originalPrice: 1399.00, image: "item22.jpg", isNew: true },
     { id: 2, name: "Adidas x Clot Black Superstar", category: "Adidas ", price: 1099.00, originalPrice: 1299.00, image: "item23.jpg", isNew: false },
     { id: 3, name: "Nike Dunk Low", category: "Nike", price: 1299.00, originalPrice: 1499.00, image: "item24.jpg", isNew: true },
-    { id: 4, name: "Nike Bailleli", category: "Nike", price: 1099.00, originalPrice: 1099.00, image: "item25.jpg", isNew: true },
+    { id: 4, name: "Nike Bailleli", category: "Nike", price: 999.00, originalPrice: 1199.00, image: "item25.jpg", isNew: true },
     { id: 5, name: "Nike", category: "Nike Orange (Kids)", price: 500.00, originalPrice: 850.00, image: "item26.jpg", isNew: false },
     { id: 6, name: "Nike Air Portal Kids", category: "Nike Shox Blue (Kids)", price: 500.00, originalPrice: 850.00, image: "item27.jpg", isNew: false },
     { id: 7, name: "Nike", category: "Nike Mix", price: 1099.00, originalPrice: 1299.00, image: "item28.jpg", isNew: false },
