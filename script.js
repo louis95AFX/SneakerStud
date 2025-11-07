@@ -317,8 +317,8 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 2, name: "New Balance ", category: "New Balance ", price: 1200.00, originalPrice: 1500.00, image: "item53.jpg", isNew: false },
     { id: 3, name: "Nike Men’s Shox", category: "Nike", price: 1150.00, originalPrice: 1300.00, image: "item54.jpg", isNew: true },
     { id: 4, name: "Ted Baker", category: "Ted Baker", price: 450.00, originalPrice: 700.00, image: "item58.jpg", isNew: true },
-    { id: 5, name: "Nike T-Shirt", category: "Nike T-Shirt", price: 150.00, originalPrice: 250.00, image: "item56.jpg", isNew: false },
-    { id: 6, name: "Nike T-Shirt", category: "Nike T-Shirt", price: 150.00, originalPrice: 250.00, image: "item57.jpg", isNew: false },
+    { id: 5, name: "Ted Baker ", category: "Ted Baker ", price: 450.00, originalPrice: 700.00, image: "item76.jpg", isNew: false },
+    { id: 6, name: "Ted Baker (Crocodile Skin)", category: "Ted Baker", price: 450.00, originalPrice: 700.00, image: "item75.jpg", isNew: true },
     { id: 7, name: "Nike Dunk Low Kids", category: "Nike", price: 500.00, originalPrice: 850.00, image: "item59.jpg", isNew: false },
     { id: 8, name: "New Balance 550 ", category: "New Balance", price: 1000.00, originalPrice: 1300.00, image: "item60.jpg", isNew: true },
     { id: 9, name: "Air Jordan 3 Retro ", category: "Nike", price: 1800.00, originalPrice: 2500.00, image: "item61.jpg", isNew: false },
@@ -341,6 +341,11 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 1, name: "Nike ", category: "Nike", price: 1000.00, originalPrice: 1200.00, image: "item3.jpg", isNew: true },
     { id: 2, name: "Nike", category: "Nike White ", price: 1150.00, originalPrice: 1400.00, image: "item4.jpg", isNew: false },
     { id: 3, name: "Adidas", category: "Adidas", price: 1050.00, originalPrice: 1300.00, image: "item7.jpg", isNew: false },
+    { id: 4, name: "Nike T-Shirt", category: "Nike T-Shirt", price: 150.00, originalPrice: 250.00, image: "item57.jpg", isNew: false },
+    { id: 5, name: "Nike T-Shirt", category: "Nike T-Shirt", price: 150.00, originalPrice: 250.00, image: "item56.jpg", isNew: false },
+
+
+
 
     ];
 
@@ -759,5 +764,4 @@ setupSalePopup();
         let filteredByFilter = currentFilter === 'all'
             ? discountedProducts // Use the discounted array here
             : discountedProducts.filter(p => p.category.toLowerCase().trim() === currentFilter.toLowerCase().trim())};
-
 
