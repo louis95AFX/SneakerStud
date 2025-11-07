@@ -199,7 +199,7 @@ class ProductCard extends HTMLElement {
             badge = '<span class="absolute top-4 left-4 bg-accent text-secondary text-xs font-bold px-3 py-1 rounded-full uppercase z-10 shadow-lg">NEW</span>';
         }
 
-        // --- Price Display Logic (Keeping the optimized font sizing from previous step) ---
+        // --- Price Display Logic ---
         let priceHTML = '';
         if (isDiscounted) {
             priceHTML = `
@@ -214,16 +214,12 @@ class ProductCard extends HTMLElement {
         } else {
             priceHTML = `
                 <div class="flex items-baseline space-x-1">
-                    <span class="text-xs sm:text-sm text-gray-500 line-through" 
-                        style="-webkit-text-stroke: 0.4px #000; text-decoration-thickness: 2px; text-decoration-color: #888888;">
-                        R${originalPriceFixed}
-                    </span>
                     <span class="text-lg sm:text-xl font-extrabold text-primary">R${priceFixed}</span>
                 </div>
             `;
         }
 
-        // --- Final Card HTML (Key change is reducing mt-3 to mt-1) ---
+        // --- Final Card HTML (Button corners softened to rounded-xl) ---
         this.innerHTML = `
             <div class="product-card bg-secondary rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300 relative" data-category="${category.toLowerCase()}">
                 ${badge}
@@ -235,15 +231,16 @@ class ProductCard extends HTMLElement {
                     <p class="text-xs text-gray-500 uppercase font-medium">${category}</p>
                     <h3 class="text-lg font-bold text-primary truncate">${name}</h3>
                     
-                    <div class="flex justify-between items-center **mt-1**">
-                        <div class="flex items-center">
-                            ${priceHTML}
-                        </div>
-                        
-                        <button class="add-to-cart-btn bg-primary text-secondary rounded-full p-1.5 sm:p-2 hover:bg-accent transition-colors shadow-lg" data-product-name="${name}" data-product-price="${price}">
-                            <i data-feather="shopping-cart" class="w-5 h-5"></i>
-                        </button>
+                    <div class="flex justify-start items-center mt-1 mb-3">
+                        ${priceHTML}
                     </div>
+                    
+                    <button class="add-to-cart-btn w-full bg-primary text-secondary text-base font-semibold **rounded-xl** px-4 py-2 hover:bg-accent transition-colors shadow-lg flex items-center justify-center space-x-2" 
+                            data-product-name="${name}" 
+                            data-product-price="${price}">
+                        <i data-feather="shopping-cart" class="w-5 h-5"></i>
+                        <span>Add to Cart</span>
+                    </button>
                 </div>
             </div>
         `;
