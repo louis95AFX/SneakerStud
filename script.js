@@ -281,10 +281,10 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 2, name: "Adidas x Clot Black Superstar", category: "Adidas ", price: 1099.00, originalPrice: 1299.00, image: "item23.jpg", isNew: false },
     { id: 3, name: "Nike Dunk Low", category: "Nike", price: 1299.00, originalPrice: 1499.00, image: "item24.jpg", isNew: true },
     { id: 4, name: "Nike Bailleli", category: "Nike", price: 1099.00, originalPrice: 1099.00, image: "item25.jpg", isNew: true },
-    { id: 5, name: "Nike", category: "Nike Orange (Kids)", price: 1199.00, originalPrice: 1399.00, image: "item26.jpg", isNew: false },
-    { id: 6, name: "Nike Air Portal Kids", category: "Nike Shox Blue (Kids)", price: 1150.00, originalPrice: 1300.00, image: "item27.jpg", isNew: false },
+    { id: 5, name: "Nike", category: "Nike Orange (Kids)", price: 500.00, originalPrice: 850.00, image: "item26.jpg", isNew: false },
+    { id: 6, name: "Nike Air Portal Kids", category: "Nike Shox Blue (Kids)", price: 500.00, originalPrice: 850.00, image: "item27.jpg", isNew: false },
     { id: 7, name: "Nike", category: "Nike Mix", price: 1099.00, originalPrice: 1299.00, image: "item28.jpg", isNew: false },
-    { id: 8, name: "Jordan 4 Retro", category: "Nike", price: 1099.00, originalPrice: 1299.00, image: "item29.jpg", isNew: true },
+    { id: 8, name: "Jordan 4 Retro", category: "Nike", price: 1800.00, originalPrice: 2500.00, image: "item29.jpg", isNew: true },
     { id: 9, name: "Nike Air Force 1 ", category: "Nike", price: 1299.00, originalPrice: 1499.00, image: "item30.jpg", isNew: false },
     { id: 10, name: "New Balance", category: "New Balance ", price: 500.00, originalPrice: 750.00, image: "item31.jpg", isNew: false },
 
@@ -759,4 +759,5 @@ setupSalePopup();
         let filteredByFilter = currentFilter === 'all'
             ? discountedProducts // Use the discounted array here
             : discountedProducts.filter(p => p.category.toLowerCase().trim() === currentFilter.toLowerCase().trim())};
+
 
