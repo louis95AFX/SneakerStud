@@ -23,25 +23,14 @@ class CustomNavbar extends HTMLElement {
 
                     <div class="flex items-center space-x-3">
                         <form id="navbar-search-form" class="hidden lg:flex relative items-center">
-                            <input 
-                                type="search" 
-                                id="navbar-search-input"
-                                name="q" 
-                                placeholder="Search products..." 
-                                class="pl-4 pr-10 py-2 w-48 text-sm border-2 border-gray-200 rounded-full focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all duration-300 bg-gray-50"
-                            >
-                            <button type="submit" class="absolute right-0 top-1/2 transform -translate-y-1/2 p-2 text-gray-500 hover:text-primary transition-colors">
-                                <i data-feather="search" class="w-5 h-5"></i>
-                            </button>
+                        
                         </form>
                         
                         <button id="open-search-mobile" class="lg:hidden text-primary hover:text-accent p-2">
                             <i data-feather="search" class="w-6 h-6"></i>
                         </button>
                         
-                        <button class="text-primary hover:text-accent p-2 hidden sm:block">
-                            <i data-feather="user" class="w-6 h-6"></i>
-                        </button>
+                        
                         <button id="open-cart" class="relative text-primary hover:text-accent p-2">
                             <i data-feather="shopping-bag" class="w-6 h-6"></i>
                             <span id="cart-count" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-accent rounded-full">0</span>
@@ -323,8 +312,6 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 8, name: "New Balance 550 ", category: "New Balance", price: 1000.00, originalPrice: 1300.00, image: "item60.jpg", isNew: true },
     { id: 9, name: "Air Jordan 3 Retro ", category: "Nike", price: 1800.00, originalPrice: 2500.00, image: "item61.jpg", isNew: false },
     { id: 10, name: "Kids Jordan Retro 4 ", category: "Nike", price: 600.00, originalPrice: 1000.00, image: "item62.jpg", isNew: false },
-
-
         //page 6
     { id: 1, name: "Nike Shox TL", category: "Nike", price: 1300.00, originalPrice: 1800.00, image: "item64.jpg", isNew: true },
     { id: 2, name: "Nike Shox TL", category: "Nike White ", price: 1300.00, originalPrice: 1800.00, image: "item65.jpg", isNew: false },
@@ -343,9 +330,6 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 3, name: "Adidas", category: "Adidas", price: 1050.00, originalPrice: 1300.00, image: "item7.jpg", isNew: false },
     { id: 4, name: "Nike T-Shirt", category: "Nike T-Shirt", price: 150.00, originalPrice: 250.00, image: "item57.jpg", isNew: false },
     { id: 5, name: "Nike T-Shirt", category: "Nike T-Shirt", price: 150.00, originalPrice: 250.00, image: "item56.jpg", isNew: false },
-
-
-
 
     ];
 
@@ -564,20 +548,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-   function updateCartDisplay() {
+function updateCartDisplay() {
     const cartItemsContainer = document.getElementById('cart-items');
     const cartSubtotal = document.getElementById('cart-subtotal');
     const cartTotal = document.getElementById('cart-total');
     const cartCount = document.getElementById('cart-count');
-    const cartShipping = document.getElementById('cart-shipping'); // add an id to your shipping span
+    const cartShipping = document.getElementById('cart-shipping');
     const checkoutButton = document.querySelector('#cart-modal .w-full.bg-accent');
 
     if (!cartItemsContainer || !cartSubtotal || !cartTotal || !cartCount || !checkoutButton || !cartShipping) return;
 
     cartItemsContainer.innerHTML = '';
     let subtotal = 0;
-    const shippingFee = 10; // R10 shipping
+    const shippingFee = 10;
 
     if (cart.length === 0) {
         cartItemsContainer.innerHTML = '<p class="text-center text-gray-500 italic py-10">Your bag is empty. Start adding some fresh kicks!</p>';
@@ -627,7 +610,11 @@ document.addEventListener('DOMContentLoaded', () => {
     cartCount.textContent = cart.length;
 
     attachRemoveListeners();
+
+    // 🔑 Sync cart with localStorage
+    localStorage.setItem('cart', JSON.stringify(cart));
 }
+
 
 
     function attachRemoveListeners() {
@@ -764,4 +751,169 @@ setupSalePopup();
         let filteredByFilter = currentFilter === 'all'
             ? discountedProducts // Use the discounted array here
             : discountedProducts.filter(p => p.category.toLowerCase().trim() === currentFilter.toLowerCase().trim())};
+
+//Email Logic
+
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+function updateCartDisplay() {
+  console.log('Cart display updated!');
+}
+
+// Show the checkout form dynamically
+function showCheckoutForm() {
+    if (cart.length === 0) {
+        alert("Your cart is empty. Please add items before checking out.");
+        return;
+    }
+    
+    const cartModal = document.getElementById('cart-modal');
+    if (cartModal) cartModal.classList.add('hidden');
+    
+    const existingForm = document.getElementById('checkout-form-container');
+    if (existingForm) existingForm.remove();
+
+    const formContainer = document.createElement('div');
+    formContainer.id = 'checkout-form-container';
+    formContainer.className = 'fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-50';
+    formContainer.innerHTML = `
+        <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-xs transform transition-all duration-300 scale-100">
+            <h2 class="text-xl font-bold mb-5 text-center text-gray-800">Complete Your Order</h2>
+            <form id="checkout-form" class="space-y-3">
+                <input type="text" id="customer-name" class="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-800 transition duration-150" placeholder="Full Name" required>
+                <input type="email" id="customer-email" class="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-800 transition duration-150" placeholder="Email Address" required>
+                <input type="tel" id="customer-phone" class="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-800 transition duration-150" placeholder="Cell Number" required>
+                
+                <div class="flex flex-col space-y-2 pt-3">
+                    <button type="submit" class="w-full bg-blue-900 text-white font-semibold text-sm py-2 rounded-md shadow-sm hover:bg-blue-800 transition duration-150">
+                        Confirm Purchase
+                    </button>
+                    <button type="button" id="cancel-checkout" class="w-full bg-white text-blue-900 border border-blue-900 font-semibold text-sm py-2 rounded-md hover:bg-blue-50 transition duration-150">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    `;
+    document.body.appendChild(formContainer);
+
+    document.getElementById('cancel-checkout').addEventListener('click', () => {
+        formContainer.remove();
+        if (cartModal) cartModal.classList.remove('hidden');
+    });
+
+    document.getElementById('checkout-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        handleCheckout(formContainer);
+    });
+}
+
+function handleCheckout() {
+  const customerName = document.getElementById('customer-name').value.trim();
+  const customerEmail = document.getElementById('customer-email').value.trim();
+  const customerPhone = document.getElementById('customer-phone').value.trim();
+
+  if (!customerName || !customerEmail || !customerPhone) {
+    alert("Please fill in all fields before confirming.");
+    return;
+  }
+
+  // ------------------------
+  // SHOW LOADING SPINNER
+  // ------------------------
+  const loadingOverlay = document.createElement('div');
+  loadingOverlay.id = 'loading-overlay';
+  loadingOverlay.style.position = 'fixed';
+  loadingOverlay.style.top = '0';
+  loadingOverlay.style.left = '0';
+  loadingOverlay.style.width = '100%';
+  loadingOverlay.style.height = '100%';
+  loadingOverlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
+  loadingOverlay.style.display = 'flex';
+  loadingOverlay.style.justifyContent = 'center';
+  loadingOverlay.style.alignItems = 'center';
+  loadingOverlay.style.zIndex = '9999';
+  loadingOverlay.innerHTML = `<div style="border:6px solid #f3f3f3; border-top:6px solid #3498db; border-radius:50%; width:50px; height:50px; animation:spin 1s linear infinite;"></div>`;
+  document.body.appendChild(loadingOverlay);
+
+  const style = document.createElement('style');
+  style.innerHTML = `
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Calculate totals
+  let subtotal = 0;
+  cart.forEach(item => subtotal += item.price);
+  const shippingFee = 10;
+  const appliedShipping = cart.length > 0 ? shippingFee : 0;
+  const totalWithShipping = subtotal + appliedShipping;
+
+  // Create order summary
+  const cartSummary = cart.map(item =>
+    `${item.name} (${item.category}) @ R${item.price.toFixed(2)}`
+  ).join('\n');
+
+  const templateParams = {
+    customer_name: customerName,
+    customer_email: customerEmail,
+    customer_phone: customerPhone,
+    order_items: cartSummary,
+    subtotal: `R${subtotal.toFixed(2)}`,
+    shipping_fee: `R${appliedShipping.toFixed(2)}`,
+    total_amount: `R${totalWithShipping.toFixed(2)}`,
+    order_number: Date.now(),
+    payment_info: `
+        Account details:
+        Bank name: Standard Bank
+        Branch name: ROSEBANK
+        Branch code: 4305
+        Account holder: THE DIRECTOR KWAKHANYA EZWENI PTY LTD
+        Account number: 10201109741
+        Account type: CURRENT
+
+        ⚠️ Please respond to this email with proof of payment once you have completed the transfer.
+    `
+  };
+
+  emailjs.send('service_n6cw895', 'template_vzwck3k', templateParams)
+    .then(() => {
+      alert(`🎉 Thank you ${customerName}! Your order has been confirmed. A confirmation email has been sent to ${customerEmail}.`);
+
+      cart.length = 0;
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartDisplay();
+      // Refresh the page
+      location.reload();
+    })
+
+    .catch(error => {
+      console.error('Checkout Error:', error);
+      alert('Checkout failed: Could not send confirmation email.');
+    })
+    .finally(() => {
+      // REMOVE LOADING SPINNER
+      loadingOverlay.remove();
+      style.remove();
+    });
+}
+
+// Attach listener (with fallback selectors)
+function attachCheckoutListener() {
+  const checkoutButton =
+    document.querySelector('#cart-modal .w-full.bg-accent') ||
+    document.getElementById('proceedCheckout') ||
+    document.querySelector('.checkout-btn');
+
+  if (checkoutButton) {
+    checkoutButton.addEventListener('click', showCheckoutForm);
+  } else {
+    console.warn('⚠️ Checkout button not found.');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', attachCheckoutListener);
 
