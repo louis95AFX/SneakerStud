@@ -60,6 +60,31 @@
     
     <custom-navbar></custom-navbar>
 
+    <div id="sale-popup-modal" class="fixed inset-0 z-[60] bg-primary bg-opacity-90 hidden items-center justify-center p-4">
+    <div class="bg-secondary rounded-xl shadow-2xl p-8 max-w-lg w-full transform transition-all duration-300 scale-95 opacity-0" id="sale-popup-content">
+        <button id="close-sale-popup" class="absolute top-4 right-4 text-gray-400 hover:text-primary transition-colors">
+            <i data-feather="x" class="w-6 h-6"></i>
+        </button>
+        
+        <div class="text-center py-6">
+            <i data-feather="tag" class="w-16 h-16 text-accent mx-auto mb-6 stroke-1"></i>
+            <h2 class="text-5xl font-extrabold text-red-600 uppercase font-display mb-3 animate-scaleIn">
+                FLASH SALE!
+            </h2>
+            <h3 class="text-3xl font-bold text-primary mb-4">
+                EVERYTHING IS ON SALE!
+            </h3>
+            <p class="text-lg text-gray-700 mb-8">
+            </p>
+            <a href="#new-releases" id="shop-sale-btn" class="bg-red-600 hover:bg-red-700 text-white font-black py-4 px-10 rounded-full text-xl uppercase transition-all duration-300 shadow-xl tracking-wider inline-block transform hover:scale-105">
+                Shop The Savings Now
+            </a>
+            <p class="text-xs text-gray-500 mt-6 cursor-pointer hover:text-primary" id="later-sale-btn">
+            </p>
+        </div>
+    </div>
+</div>
+
     <section class="relative h-screen overflow-hidden flex items-center bg-primary">
     <div class="absolute inset-0">
         <img src="item55.png" alt="Hero Background Image" class="absolute inset-0 w-full h-full object-cover">
@@ -229,9 +254,10 @@
                         <span id="cart-subtotal" class="font-medium">R0.00</span>
                     </div>
                     <div class="flex justify-between mb-6 text-lg">
-                        <span>Shipping</span>
-                        <span class="font-medium text-green-600">FREE</span>
-                    </div>
+    <span>Shipping</span>
+    <span id="cart-shipping" class="font-medium text-green-600">R10</span>
+</div>
+
                     <div class="flex justify-between font-extrabold text-2xl border-t pt-6 mt-6 text-primary font-display">
                         <span>ESTIMATED TOTAL</span>
                         <span id="cart-total">R0.00</span>

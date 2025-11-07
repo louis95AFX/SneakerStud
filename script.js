@@ -9,10 +9,17 @@ class CustomNavbar extends HTMLElement {
                         Sneaker<span class="text-accent">Stud</span>
                     </a>
 
-                    <div class="hidden md:flex space-x-10 text-base font-semibold uppercase">
-                        <a href="/releases" class="text-primary hover:text-accent transition-colors">New Drops</a>
-                        <a href="/sale" class="text-accent hover:text-blue-600 transition-colors">Sale</a>
-                    </div>
+                    <div class="hidden md:flex space-x-10 text-base font-semibold uppercase items-center">
+                        <a href="#" class="text-primary hover:text-accent transition-colors">SALE NOW ON</a>
+                        
+                        <div class="flex items-center space-x-2">
+                            <a href="/sale" class="text-accent hover:text-blue-600 transition-colors"></a>
+                            <div class="flex items-baseline space-x-1 ml-1 text-sm">
+                                <span class="text-base font-bold text-accent">
+                                </span>
+                            </div>
+                        </div>
+                        </div>
 
                     <div class="flex items-center space-x-3">
                         <form id="navbar-search-form" class="hidden lg:flex relative items-center">
@@ -174,37 +181,61 @@ class ProductCard extends HTMLElement {
         const name = this.getAttribute('name') || 'New Performance Runner';
         const category = this.getAttribute('category') || 'Running';
         const price = this.getAttribute('price') || '150.00';
-        const originalPrice = this.getAttribute('original-price'); // New attribute for sale
+        const originalPrice = this.getAttribute('original-price') || price; // Default to same price if missing
         const image = this.getAttribute('image') || 'https://picsum.photos/id/42/400/300';
-        const isNew = this.hasAttribute('new') && !originalPrice; // Only show 'NEW' if not on sale
+        
+        const isNew = this.hasAttribute('new');
+        const isDiscounted = parseFloat(originalPrice) > parseFloat(price);
 
-        // Determine the badge content
+        // --- Badge Logic ---
         let badge = '';
-        if (originalPrice) {
-             // Use red for sale items for high visibility
+        if (isDiscounted) {
             badge = '<span class="absolute top-4 left-4 bg-red-500 text-secondary text-xs font-bold px-3 py-1 rounded-full uppercase z-10 shadow-lg">SALE</span>';
         } else if (isNew) {
-            // Use accent color (Sky Blue) for new items
             badge = '<span class="absolute top-4 left-4 bg-accent text-secondary text-xs font-bold px-3 py-1 rounded-full uppercase z-10 shadow-lg">NEW</span>';
         }
 
+        // --- Price Display Logic ---
+        let priceHTML = '';
+        if (isDiscounted) {
+            // Show both prices when discounted
+            priceHTML = `
+                <div class="flex items-baseline space-x-2">
+<span class="text-sm text-gray-500 line-through" 
+      style="-webkit-text-stroke: 0.4px #000; text-decoration-thickness: 2px; text-decoration-color: #888888;">
+    R${parseFloat(originalPrice).toFixed(2)}
+</span>
+                    <span class="text-xl font-extrabold text-accent">R${parseFloat(price).toFixed(2)}</span>
+                </div>
+            `;
+        } else {
+            // If same price, show both neatly (no line-through)
+            priceHTML = `
+                <div class="flex items-baseline space-x-2">
+<span class="text-sm text-gray-500 line-through" 
+      style="-webkit-text-stroke: 0.4px #000; text-decoration-thickness: 2px; text-decoration-color: #888888;">
+    R${parseFloat(originalPrice).toFixed(2)}
+</span>
+                    <span class="text-xl font-extrabold text-primary">R${parseFloat(price).toFixed(2)}</span>
+                </div>
+            `;
+        }
+
+        // --- Final Card HTML ---
         this.innerHTML = `
             <div class="product-card bg-secondary rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300 relative" data-category="${category.toLowerCase()}">
-                
-                ${badge} <div class="h-56 sm:h-64 mb-3 relative bg-gray-100">
+                ${badge}
+                <div class="h-56 sm:h-64 mb-3 relative bg-gray-100">
                     <img src="${image}" alt="${name}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
                 </div>
                 
                 <div class="px-3 pb-4">
                     <p class="text-xs text-gray-500 uppercase font-medium">${category}</p>
                     <h3 class="text-lg font-bold text-primary truncate">${name}</h3>
+                    
                     <div class="flex justify-between items-center mt-3">
-                        <div class="flex flex-col items-start">
-                            ${originalPrice ? 
-                                // Display original price as crossed out
-                                `<span class="text-sm text-gray-400 line-through">R${parseFloat(originalPrice).toFixed(2)}</span>` 
-                                : ''}
-                            <span class="text-xl font-extrabold ${originalPrice ? 'text-accent' : 'text-primary'}">R${parseFloat(price).toFixed(2)}</span>
+                        <div class="flex items-center">
+                            ${priceHTML}
                         </div>
                         
                         <button class="add-to-cart-btn bg-primary text-secondary rounded-full p-2 hover:bg-accent transition-colors shadow-lg" data-product-name="${name}" data-product-price="${price}">
@@ -214,6 +245,8 @@ class ProductCard extends HTMLElement {
                 </div>
             </div>
         `;
+
+        // Replace icons if Feather is loaded
         if (typeof feather !== 'undefined') {
             feather.replace();
         }
@@ -221,7 +254,6 @@ class ProductCard extends HTMLElement {
 }
 customElements.define('product-card', ProductCard);
 
-// script.js
 // script.js
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -350,40 +382,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // script.js (Updated renderProducts function)
 
-    function renderProducts(productsToDisplay) {
-        productsGrid.innerHTML = ''; 
-        if (!productsGrid || productsToDisplay.length === 0) {
-            if (productsGrid) {
-                productsGrid.innerHTML = '<p class="col-span-full text-center text-gray-500 text-lg py-10">No products found for this query or category. Try searching again.</p>';
-            }
-            return;
+  function renderProducts(productsToDisplay) {
+    productsGrid.innerHTML = ''; 
+    if (!productsGrid || productsToDisplay.length === 0) {
+        if (productsGrid) {
+            productsGrid.innerHTML = '<p class="col-span-full text-center text-gray-500 text-lg py-10">No products found for this query or category. Try searching again.</p>';
         }
-
-        productsToDisplay.forEach(product => {
-            const card = document.createElement('product-card');
-            
-            // Set required attributes first
-            card.setAttribute('name', product.name);
-            card.setAttribute('category', product.category);
-            card.setAttribute('price', product.price.toFixed(2));
-            card.setAttribute('image', product.image);
-            
-            // Set ORIGINAL PRICE attribute if it exists
-            if (product.originalPrice) {
-                // Ensure the attribute name matches what is looked for in the component (original-price)
-                card.setAttribute('original-price', product.originalPrice.toFixed(2)); 
-            }
-            
-            if (product.isNew && !product.originalPrice) {
-                card.setAttribute('new', '');
-            }
-            
-            // Append to the grid (which triggers connectedCallback)
-            productsGrid.appendChild(card);
-        });
-        
-        attachCartListeners();
+        return;
     }
+
+    productsToDisplay.forEach(product => {
+        const card = document.createElement('product-card');
+        
+        // Set required attributes
+        card.setAttribute('name', product.name);
+        card.setAttribute('category', product.category);
+        
+        // Current price (the new/sale price) must always be set
+        card.setAttribute('price', product.price.toFixed(2));
+        card.setAttribute('image', product.image);
+        
+        // --- CRITICAL UPDATE FOR SALE PRICE DISPLAY ---
+        // Only set the 'original-price' attribute if it exists AND is greater than the current price.
+        if (product.originalPrice && product.originalPrice > product.price) {
+            // The custom component will use this attribute to display the 'before' price and the 'SALE' badge.
+            card.setAttribute('original-price', product.originalPrice.toFixed(2)); 
+        }
+        
+        // Set 'new' attribute only if the item is flagged as new AND not currently on sale.
+        if (product.isNew && !(product.originalPrice > product.price)) {
+            card.setAttribute('new', '');
+        }
+        
+        // Append to the grid (which triggers connectedCallback)
+        productsGrid.appendChild(card);
+    });
+    
+    attachCartListeners();
+}
     // --- Pagination Logic ---
     function renderPagination(totalPages) {
         if (!paginationContainer) return;
@@ -459,61 +495,70 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function updateCartDisplay() {
-        const cartItemsContainer = document.getElementById('cart-items');
-        const cartSubtotal = document.getElementById('cart-subtotal');
-        const cartTotal = document.getElementById('cart-total');
-        const cartCount = document.getElementById('cart-count');
-        const checkoutButton = document.querySelector('#cart-modal .w-full.bg-accent');
+   function updateCartDisplay() {
+    const cartItemsContainer = document.getElementById('cart-items');
+    const cartSubtotal = document.getElementById('cart-subtotal');
+    const cartTotal = document.getElementById('cart-total');
+    const cartCount = document.getElementById('cart-count');
+    const cartShipping = document.getElementById('cart-shipping'); // add an id to your shipping span
+    const checkoutButton = document.querySelector('#cart-modal .w-full.bg-accent');
 
-        if (!cartItemsContainer || !cartSubtotal || !cartTotal || !cartCount || !checkoutButton) return;
+    if (!cartItemsContainer || !cartSubtotal || !cartTotal || !cartCount || !checkoutButton || !cartShipping) return;
 
-        cartItemsContainer.innerHTML = '';
-        let subtotal = 0;
+    cartItemsContainer.innerHTML = '';
+    let subtotal = 0;
+    const shippingFee = 10; // R10 shipping
 
-        if (cart.length === 0) {
-             cartItemsContainer.innerHTML = '<p class="text-center text-gray-500 italic py-10">Your bag is empty. Start adding some fresh kicks!</p>';
-             checkoutButton.disabled = true;
-             checkoutButton.classList.add('opacity-50', 'cursor-not-allowed');
-        } else {
-             checkoutButton.disabled = false;
-             checkoutButton.classList.remove('opacity-50', 'cursor-not-allowed');
+    if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '<p class="text-center text-gray-500 italic py-10">Your bag is empty. Start adding some fresh kicks!</p>';
+        checkoutButton.disabled = true;
+        checkoutButton.classList.add('opacity-50', 'cursor-not-allowed');
+    } else {
+        checkoutButton.disabled = false;
+        checkoutButton.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
+
+    cart.forEach((item, index) => {
+        subtotal += item.price;
+        const itemElement = document.createElement('div');
+        itemElement.classList.add('flex', 'space-x-4', 'pb-4', 'border-b', 'border-gray-100');
+        itemElement.innerHTML = `
+            <img src="${item.image || 'https://picsum.photos/80'}" alt="${item.name}" class="w-20 h-20 object-cover rounded-md flex-shrink-0">
+            <div class="flex-grow">
+                <p class="font-semibold text-primary text-base">${item.name}</p>
+                <p class="text-xs text-gray-500 mb-2">${item.category}</p>
+                <p class="font-bold text-accent">R${item.price.toFixed(2)}</p>
+            </div>
+            <button class="remove-item-btn text-gray-400 hover:text-red-500 transition-colors" data-index="${index}">
+                <i data-feather="trash-2" class="w-5 h-5"></i>
+            </button>
+        `;
+        if (typeof feather !== 'undefined') {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = itemElement.innerHTML;
+            feather.replace({ root: tempDiv });
+            itemElement.innerHTML = tempDiv.innerHTML;
         }
 
-        cart.forEach((item, index) => {
-            subtotal += item.price;
-            const itemElement = document.createElement('div');
-            itemElement.classList.add('flex', 'space-x-4', 'pb-4', 'border-b', 'border-gray-100');
-            itemElement.innerHTML = `
-                <img src="${item.image || 'https://picsum.photos/80'}" alt="${item.name}" class="w-20 h-20 object-cover rounded-md flex-shrink-0">
-                <div class="flex-grow">
-                    <p class="font-semibold text-primary text-base">${item.name}</p>
-                    <p class="text-xs text-gray-500 mb-2">${item.category}</p>
-                    <p class="font-bold text-accent">R${item.price.toFixed(2)}</p>
-                </div>
-                <button class="remove-item-btn text-gray-400 hover:text-red-500 transition-colors" data-index="${index}">
-                    <i data-feather="trash-2" class="w-5 h-5"></i>
-                </button>
-            `;
-            // Initialize feather icons on the new item element
-            if (typeof feather !== 'undefined') {
-                 // Temporary div needed for feather to work correctly on newly created content
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = itemElement.innerHTML;
-                feather.replace({ root: tempDiv });
-                itemElement.innerHTML = tempDiv.innerHTML;
-            }
+        cartItemsContainer.appendChild(itemElement);
+    });
 
-            cartItemsContainer.appendChild(itemElement);
-        });
+    // Update subtotal
+    cartSubtotal.textContent = `R${subtotal.toFixed(2)}`;
 
-        // Update totals and badge
-        cartSubtotal.textContent = `R${subtotal.toFixed(2)}`;
-        cartTotal.textContent = `R${subtotal.toFixed(2)}`;
-        cartCount.textContent = cart.length;
-        
-        attachRemoveListeners();
-    }
+    // Update shipping display
+    const appliedShipping = cart.length > 0 ? shippingFee : 0;
+    cartShipping.textContent = `R${appliedShipping.toFixed(2)}`;
+
+    // Update estimated total
+    const totalWithShipping = subtotal + appliedShipping;
+    cartTotal.textContent = `R${totalWithShipping.toFixed(2)}`;
+
+    cartCount.textContent = cart.length;
+
+    attachRemoveListeners();
+}
+
 
     function attachRemoveListeners() {
         document.querySelectorAll('.remove-item-btn').forEach(button => {
@@ -557,6 +602,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+
 // script.js (Updated to include navbar search listener)
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -568,62 +615,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Sample Product Data ---
     const allProducts = [
-        // Page 1
-        { id: 1, name: "Nike", category: "Nike", price: 900.00,originalPrice: 1299.00, image: "item6.jpg",isNew: true },
-        { id: 2, name: "Nike Jordan", category: "Nike", price: 1099.00, originalPrice: 1299.00, image: "item8.jpg", isNew: false },
-        { id: 3, name: "Nike ", category: "Nike White", price: 999.00,originalPrice: 1199.00, image: "item14.jpg", isNew: true },
-        { id: 4, name: "New Balance", category: "New Balance", price: 999.00, originalPrice: 1199.00, image: "item21.jpg", isNew: true },
-        { id: 5,name: "Nike", category: "Nike Black", price: 999.00, originalPrice: 1199.00, image: "item15.jpg",isNew: false },
-        { id: 6,name: "Nike",category: "Nike Mix",price: 2799.00,originalPrice: 2999.00,image: "item16.jpg",isNew: false },
-        { id: 7, name: "Nike", category: "Nike White",price: 1099.00, originalPrice: 1299.00, image: "item17.jpg",isNew: false },
-        { id: 8, name: "Nike Mix", category: "Nike Mix",price: 1199.00,originalPrice: 1399.00, image: "item18.jpg", isNew: true },
-        { id: 9, name: "Nike", category: "Nike Green", price: 999.00,originalPrice: 1199.00,  image: "item19.jpg",isNew: false },
-        { id: 10, name: "Adidas", category: "Adidas Orange", price: 999.00,originalPrice: 1199.00, image: "item20.jpg", isNew: false },
-        
-        // Page 2
-        { id: 1, name: "Nike", category: "Nike Green", price: 1199.00, image: "item22.jpg", isNew: true },
-        { id: 2, name: "Adidas", category: "Adidas Black", price: 1099.00, image: "item23.jpg", isNew: false },
-        { id: 3, name: "Nike", category: "Black Mix", price: 1299.00, image: "item24.jpg", isNew: true },
-        { id: 4, name: "Nike", category: "Nike Green", price: 1099.00, image: "item25.jpg", isNew: true },
-        { id: 5, name: "Nike", category: "Nike Orange", price: 1199.00, image: "item26.jpg", isNew: false },
-        { id: 6, name: "Nike", category: "Nike Blue", price: 1199.00, image: "item27.jpg", isNew: false },
-        { id: 7, name: "Nike", category: "Nike Mix", price: 1099.00, image: "item28.jpg", isNew: false },
-        { id: 8, name: "Nike", category: "Black", price: 1099.00, image: "item29.jpg", isNew: true },
-        { id: 9, name: "Nike ", category: "Nike", price: 1299.00, image: "item30.jpg", isNew: false },
-        { id: 10, name: "New Balance", category: "New Balance ", price: 1399.00, image: "item31.jpg", isNew: false },
+    // Page 1
+    { id: 1, name: "Nike Zoom Vomero Roam", category: "Nike", price: 900.00, originalPrice: 1299.00, image: "item6.jpg", isNew: true },
+    { id: 2, name: "Jordan 4 Retro", category: "Nike", price: 1099.00, originalPrice: 1299.00, image: "item8.jpg", isNew: false },
+    { id: 3, name: "Nike Air Force 1 ", category: "Nike ", price: 999.00, originalPrice: 1199.00, image: "item14.jpg", isNew: true },
+    { id: 4, name: "New Balance", category: "New Balance", price: 999.00, originalPrice: 1199.00, image: "item21.jpg", isNew: true },
+    { id: 5, name: "Nike Air Force 1", category: "Nike ", price: 999.00, originalPrice: 1199.00, image: "item15.jpg", isNew: false },
+    { id: 6, name: "Nike Air Max Furyosa", category: "Nike Mix", price: 2799.00, originalPrice: 2999.00, image: "item16.jpg", isNew: false },
+    { id: 7, name: "Nike", category: "Nike White", price: 1099.00, originalPrice: 1299.00, image: "item17.jpg", isNew: false },
+    { id: 8, name: "Nike Mix", category: "Nike Mix", price: 1199.00, originalPrice: 1399.00, image: "item18.jpg", isNew: true },
+    { id: 9, name: "Nike", category: "Nike Green", price: 999.00, originalPrice: 1199.00, image: "item19.jpg", isNew: false },
+    { id: 10, name: "Adidas Forum Mod", category: "Adidas", price: 999.00, originalPrice: 1199.00, image: "item20.jpg", isNew: false },
 
-            // Page 3
-        { id: 1, name: "Nike ", category: "Nike ", price: 1099.00, image: "item32.jpg", isNew: true },
-        { id: 2, name: "Nike", category: "Nike", price: 1399.00, image: "item33.jpg", isNew: false },
-        { id: 3, name: "Nike", category: "Nike", price: 1199.00, image: "item34.jpg", isNew: true },
-        { id: 4, name: "Nike", category: "Nike", price: 1199.00, image: "item35.jpg", isNew: true },
-        { id: 5, name: "Nike", category: "Nike", price: 1399.00, image: "item36.jpg", isNew: false },
-        { id: 6, name: "Nike", category: "Nike", price: 1299.00, image: "item37.jpg", isNew: false },
-        { id: 7, name: "Adidas", category: "Adidas", price: 950.00, image: "item38.jpg", isNew: false },
-        { id: 8, name: "Nike", category: "Nike", price: 1299.00, image: "item39.jpg", isNew: true },
-        { id: 9, name: "-", category: "-", price: 1100.00, image: "item40.jpg", isNew: false },
-        { id: 10, name: "Adidas", category: "Adidas", price: 1200.00, image: "item42.jpg", isNew: false },
+    // Page 2 - Prices updated with hypothetical originalPrice
+    { id: 1, name: "Nike", category: "Nike Green", price: 1199.00, originalPrice: 1399.00, image: "item22.jpg", isNew: true },
+    { id: 2, name: "Adidas x Clot Black Superstar", category: "Adidas ", price: 1099.00, originalPrice: 1299.00, image: "item23.jpg", isNew: false },
+    { id: 3, name: "Nike Dunk Low", category: "Nike", price: 1299.00, originalPrice: 1499.00, image: "item24.jpg", isNew: true },
+    { id: 4, name: "Nike Bailleli", category: "Nike", price: 1099.00, originalPrice: 1099.00, image: "item25.jpg", isNew: true },
+    { id: 5, name: "Nike", category: "Nike Orange", price: 1199.00, originalPrice: 1399.00, image: "item26.jpg", isNew: false },
+    { id: 6, name: "Nike Air Portal Kids", category: "Nike Shox Blue", price: 1150.00, originalPrice: 1300.00, image: "item27.jpg", isNew: false },
+    { id: 7, name: "Nike", category: "Nike Mix", price: 1099.00, originalPrice: 1299.00, image: "item28.jpg", isNew: false },
+    { id: 8, name: "Jordan 4 Retro", category: "Nike", price: 1099.00, originalPrice: 1299.00, image: "item29.jpg", isNew: true },
+    { id: 9, name: "Nike Air Force 1 ", category: "Nike", price: 1299.00, originalPrice: 1499.00, image: "item30.jpg", isNew: false },
+    { id: 10, name: "New Balance", category: "New Balance ", price: 1399.00, originalPrice: 1599.00, image: "item31.jpg", isNew: false },
 
-            // Page 4
-        { id: 1, name: "Adidas", category: "Adidas", price: 1099.00, image: "item41.jpg", isNew: true },
-        { id: 2, name: "Nike ", category: "Nike ", price: 1299.00, image: "item43.jpg", isNew: false },
-        { id: 3, name: "Nike", category: "Nike", price: 1150.00, image: "item44.jpg", isNew: true },
-        { id: 4, name: "Nike", category: "Nike", price: 1200.00, image: "item45.jpg", isNew: true },
-        { id: 5, name: "Timberland", category: "Timberland", price: 1199.00, image: "item46.jpg", isNew: false },
-        { id: 6, name: "Replay", category: "Replay", price: 1200.00, image: "item47.jpg", isNew: false },
-        { id: 7, name: "Nike", category: "Nike Black/Grey", price: 1250.00, image: "item48.jpg", isNew: false },
-        { id: 8, name: "Converse", category: "Converse", price: 1050.00, image: "item49.jpg", isNew: true },
-        { id: 9, name: "Lacoste", category: "Lacost Green", price: 1200.00, image: "item50.jpg", isNew: false },
-        { id: 10, name: "Puma", category: "Puma Blue", price: 950.00, image: "item51.jpg", isNew: false },
+    // Page 3 - Prices updated with hypothetical originalPrice
+    { id: 1, name: "Nike Air Max ", category: "Nike ", price: 1099.00, originalPrice: 1099.00, image: "item32.jpg", isNew: true },
+    { id: 2, name: "Nike Air Max 1", category: "Nike", price: 1399.00, originalPrice: 1599.00, image: "item33.jpg", isNew: false },
+    { id: 3, name: "Nike Air Max", category: "Nike", price: 1199.00, originalPrice: 1399.00, image: "item34.jpg", isNew: true },
+    { id: 4, name: "Nike", category: "Nike", price: 1199.00, originalPrice: 1199.00, image: "item35.jpg", isNew: true },
+    { id: 5, name: "Nike", category: "Nike", price: 1399.00, originalPrice: 1599.00, image: "item36.jpg", isNew: false },
+    { id: 6, name: "Nike", category: "Nike", price: 1299.00, originalPrice: 1499.00, image: "item37.jpg", isNew: false },
+    { id: 7, name: "Adidas", category: "Adidas", price: 950.00, originalPrice: 1150.00, image: "item38.jpg", isNew: false },
+    { id: 8, name: "Nike Dunk Low", category: "Nike", price: 1299.00, originalPrice: 1299.00, image: "item39.jpg", isNew: true },
+    { id: 9, name: "Nike Air Max Plus", category: "Nike", price: 1100.00, originalPrice: 1300.00, image: "item40.jpg", isNew: false },
+    { id: 10, name: "Adidas SL 72", category: "Adidas", price: 1200.00, originalPrice: 1400.00, image: "item42.jpg", isNew: false },
 
-        // Page 5
-        { id: 1, name: "Converse", category: "Converse", price: 1000.00, image: "item52.jpg", isNew: true },
-        { id: 2, name: "New Balance ", category: "New Balance ", price: 1299.00, image: "item53.jpg", isNew: false },
-        { id: 3, name: "Nike", category: "Nike", price: 1150.00, image: "item54.jpg", isNew: true },
-        { id: 5, name: "Nike T-Shirt", category: "Nike T-Shirt", price: 150.00, image: "item56.jpg", isNew: false },
-        { id: 6, name: "Nike T-Shirt", category: "Nike T-Shirt", price: 150.00, image: "item57.jpg", isNew: false },
-    ];
+    // Page 4 - Prices updated with hypothetical originalPrice
+    { id: 1, name: "Adidas Gazelle", category: "Adidas", price: 1099.00, originalPrice: 1299.00, image: "item41.jpg", isNew: true },
+    { id: 2, name: "Nike Dunk Low ", category: "Nike ", price: 1299.00, originalPrice: 1499.00, image: "item43.jpg", isNew: false },
+    { id: 3, name: "Nike Air Force 1 Luxe", category: "Nike", price: 1150.00, originalPrice: 1150.00, image: "item44.jpg", isNew: true },
+    { id: 4, name: "Nike", category: "Nike", price: 1200.00, originalPrice: 1400.00, image: "item45.jpg", isNew: true },
+    { id: 5, name: "Timberland", category: "Timberland", price: 1199.00, originalPrice: 1399.00, image: "item46.jpg", isNew: false },
+    { id: 6, name: "Replay", category: "Replay", price: 1200.00, originalPrice: 1200.00, image: "item47.jpg", isNew: false },
+    { id: 7, name: "Nike", category: "Nike Black/Grey", price: 1250.00, originalPrice: 1450.00, image: "item48.jpg", isNew: false },
+    { id: 8, name: "Converse", category: "Converse", price: 1050.00, originalPrice: 1250.00, image: "item49.jpg", isNew: true },
+    { id: 9, name: "Lacoste", category: "Lacost Green", price: 1200.00, originalPrice: 1400.00, image: "item50.jpg", isNew: false },
+    { id: 10, name: "Puma", category: "Puma Blue", price: 950.00, originalPrice: 1150.00, image: "item51.jpg", isNew: false },
 
+    // Page 5 - Prices updated with hypothetical originalPrice
+    { id: 1, name: "Converse All Star", category: "Converse", price: 1000.00, originalPrice: 1200.00, image: "item52.jpg", isNew: true },
+    { id: 2, name: "New Balance ", category: "New Balance ", price: 1299.00, originalPrice: 1499.00, image: "item53.jpg", isNew: false },
+    { id: 3, name: "Nike", category: "Nike", price: 1150.00, originalPrice: 1350.00, image: "item54.jpg", isNew: true },
+    // Note: Items 4 is missing here, proceeding with 5 and 6.
+    { id: 5, name: "Nike T-Shirt", category: "Nike T-Shirt", price: 150.00, originalPrice: 250.00, image: "item56.jpg", isNew: false },
+    { id: 6, name: "Nike T-Shirt", category: "Nike T-Shirt", price: 150.00, originalPrice: 250.00, image: "item57.jpg", isNew: false },
+];
     // --- DOM Elements ---
     const productsGrid = document.getElementById('products-grid');
     const filterButtons = document.querySelectorAll('.filter-btn');
@@ -898,3 +945,98 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+// script.js
+
+// ... existing code ...
+
+// --- New Sale Pop-up Modal Logic ---
+function setupSalePopup() {
+    const modal = document.getElementById('sale-popup-modal');
+    const content = document.getElementById('sale-popup-content');
+    const closeBtn = document.getElementById('close-sale-popup');
+    const shopBtn = document.getElementById('shop-sale-btn');
+    const laterBtn = document.getElementById('later-sale-btn');
+
+    // We no longer check sessionStorage, so it shows on every refresh!
+
+    if (typeof feather !== 'undefined') {
+        feather.replace();
+    }
+    
+    // Ensure the modal element exists before proceeding
+    if (!modal) {
+        return;
+    }
+
+    // Function to close
+    const closeModal = () => {
+        content.classList.remove('scale-100', 'opacity-100');
+        content.classList.add('scale-95', 'opacity-0');
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            // NO LONGER SETTING sessionStorage ITEM HERE
+        }, 300); 
+    };
+    
+    // Function to open the modal
+    const openModal = () => {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        setTimeout(() => {
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }, 50); 
+    }
+
+    // Attach event listeners
+    closeBtn.addEventListener('click', closeModal);
+    laterBtn.addEventListener('click', closeModal);
+    
+    shopBtn.addEventListener('click', closeModal); // Changed this to just close, as the link handles the navigation
+
+    // Show the modal after a short delay
+    setTimeout(openModal, 500); 
+}
+
+// Call the function at the end of DOMContentLoaded
+setupSalePopup();
+// script.js
+
+// ... existing code ...
+
+    // --- Core Rendering & Filtering Logic ---
+    const DISCOUNT_RATE = 0.80; // 20% off
+
+    function filterAndPaginateProducts() {
+        
+        // 🚀 NEW LOGIC: Apply the 20% discount dynamically to all products
+        const discountedProducts = allProducts.map(p => {
+            // Check if a sale price already exists (originalPrice > price).
+            // If it does, we use the current price (which is already the lower sale price).
+            // If it doesn't, we apply the 20% discount.
+            
+            const currentPrice = p.price;
+            
+            // Check if the original price exists and is higher (meaning it's already a sale)
+            const isAlreadyOnSale = p.originalPrice && p.originalPrice > currentPrice;
+
+            if (isAlreadyOnSale) {
+                 // If it's already on sale, we'll keep the current price as the final price, 
+                 // and the originalPrice attribute will display the previous price.
+                return p;
+            } else {
+                 // If it's NOT on sale, calculate the new sale price.
+                 const newPrice = p.price * DISCOUNT_RATE;
+                 return {
+                    ...p, // keep all existing properties
+                    originalPrice: p.price, // the old price becomes the original price
+                    price: newPrice // the new discounted price
+                 };
+            }
+        });
+
+        let filteredByFilter = currentFilter === 'all'
+            ? discountedProducts // Use the discounted array here
+            : discountedProducts.filter(p => p.category.toLowerCase().trim() === currentFilter.toLowerCase().trim())};
