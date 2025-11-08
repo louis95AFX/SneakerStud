@@ -1,5 +1,6 @@
 
 // components/navbar.js
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
 class CustomNavbar extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
@@ -164,23 +165,22 @@ customElements.define('custom-footer', CustomFooter);
 class ProductCard extends HTMLElement {
     constructor() {
         super();
+        this.handleAddToCart = this.handleAddToCart.bind(this);
     }
 
     connectedCallback() {
-        // ... (Attributes and Badge Logic remain the same) ...
         const name = this.getAttribute('name') || 'New Performance Runner';
         const category = this.getAttribute('category') || 'Running';
         const price = this.getAttribute('price') || '150.00';
         const originalPrice = this.getAttribute('original-price') || price;
         const image = this.getAttribute('image') || 'https://picsum.photos/id/42/400/300';
-        
+
         const isNew = this.hasAttribute('new');
         const isDiscounted = parseFloat(originalPrice) > parseFloat(price);
-        
+
         const originalPriceFixed = parseFloat(originalPrice).toFixed(2);
         const priceFixed = parseFloat(price).toFixed(2);
 
-        // --- Badge Logic ---
         let badge = '';
         if (isDiscounted) {
             badge = '<span class="absolute top-4 left-4 bg-red-500 text-secondary text-xs font-bold px-3 py-1 rounded-full uppercase z-10 shadow-lg">SALE</span>';
@@ -188,12 +188,11 @@ class ProductCard extends HTMLElement {
             badge = '<span class="absolute top-4 left-4 bg-accent text-secondary text-xs font-bold px-3 py-1 rounded-full uppercase z-10 shadow-lg">NEW</span>';
         }
 
-        // --- Price Display Logic ---
         let priceHTML = '';
         if (isDiscounted) {
             priceHTML = `
                 <div class="flex items-baseline space-x-1">
-                    <span class="text-xs sm:text-sm text-gray-500 line-through" 
+                    <span class="text-xs sm:text-sm text-gray-500 line-through"
                         style="-webkit-text-stroke: 0.4px #000; text-decoration-thickness: 2px; text-decoration-color: #888888;">
                         R${originalPriceFixed}
                     </span>
@@ -208,25 +207,23 @@ class ProductCard extends HTMLElement {
             `;
         }
 
-        // --- Final Card HTML (Button corners softened to rounded-xl) ---
+        // ✅ Adjusted Qty input styling for better fit
         this.innerHTML = `
             <div class="product-card bg-secondary rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300 relative" data-category="${category.toLowerCase()}">
                 ${badge}
                 <div class="h-56 sm:h-64 mb-3 relative bg-gray-100">
                     <img src="${image}" alt="${name}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
                 </div>
-                
+
                 <div class="px-3 pb-4">
                     <p class="text-xs text-gray-500 uppercase font-medium">${category}</p>
                     <h3 class="text-lg font-bold text-primary truncate">${name}</h3>
-                    
-                    <div class="flex justify-start items-center mt-1 mb-3">
+
+                    <div class="flex justify-between items-center mt-1 mb-3">
                         ${priceHTML}
                     </div>
-                    
-                    <button class="add-to-cart-btn w-full bg-primary text-secondary text-base font-semibold **rounded-xl** px-4 py-2 hover:bg-accent transition-colors shadow-lg flex items-center justify-center space-x-2" 
-                            data-product-name="${name}" 
-                            data-product-price="${price}">
+
+                    <button class="add-to-cart-btn w-full bg-primary text-secondary text-base font-semibold rounded-xl px-4 py-2 hover:bg-accent transition-colors shadow-lg flex items-center justify-center space-x-2">
                         <i data-feather="shopping-cart" class="w-5 h-5"></i>
                         <span>Add to Cart</span>
                     </button>
@@ -234,13 +231,54 @@ class ProductCard extends HTMLElement {
             </div>
         `;
 
-        // Replace icons if Feather is loaded
+        const addToCartButton = this.querySelector('.add-to-cart-btn');
+        if (addToCartButton) {
+            addToCartButton.removeEventListener('click', this.handleAddToCart);
+            addToCartButton.addEventListener('click', this.handleAddToCart);
+        }
+
         if (typeof feather !== 'undefined') {
             feather.replace();
         }
     }
+
+    handleAddToCart(event) {
+        event.preventDefault();
+
+        const productName = this.querySelector('h3').textContent.trim();
+        const price = this.getAttribute('price');
+        const qtyInput = this.querySelector('.qty-input');
+
+        const quantity = parseInt(qtyInput ? qtyInput.value : 1);
+
+        if (quantity < 1 || isNaN(quantity)) {
+            alert("Please select a valid quantity (1 or more).");
+            return;
+        }
+
+        const productDetails = {
+            name: productName,
+            category: this.getAttribute('category'),
+            price: parseFloat(price) * quantity,
+            unitPrice: parseFloat(price),
+            quantity: quantity
+        };
+
+        this.dispatchEvent(new CustomEvent('product-added-to-cart', {
+            detail: productDetails,
+            bubbles: true,
+            composed: true
+        }));
+
+        if (qtyInput) {
+            qtyInput.value = 1;
+        }
+
+    }
 }
+
 customElements.define('product-card', ProductCard);
+
 
 // script.js
 document.addEventListener('DOMContentLoaded', () => {
@@ -436,7 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // script.js (Updated renderProducts function)
 
-  function renderProducts(productsToDisplay) {
+ function renderProducts(productsToDisplay) {
     productsGrid.innerHTML = ''; 
     if (!productsGrid || productsToDisplay.length === 0) {
         if (productsGrid) {
@@ -451,29 +489,39 @@ document.addEventListener('DOMContentLoaded', () => {
         // Set required attributes
         card.setAttribute('name', product.name);
         card.setAttribute('category', product.category);
-        
-        // Current price (the new/sale price) must always be set
         card.setAttribute('price', product.price.toFixed(2));
         card.setAttribute('image', product.image);
         
-        // --- CRITICAL UPDATE FOR SALE PRICE DISPLAY ---
-        // Only set the 'original-price' attribute if it exists AND is greater than the current price.
+        // Original price for sale items
         if (product.originalPrice && product.originalPrice > product.price) {
-            // The custom component will use this attribute to display the 'before' price and the 'SALE' badge.
             card.setAttribute('original-price', product.originalPrice.toFixed(2)); 
         }
         
-        // Set 'new' attribute only if the item is flagged as new AND not currently on sale.
+        // New badge for new items not on sale
         if (product.isNew && !(product.originalPrice > product.price)) {
             card.setAttribute('new', '');
         }
+
+        // ✅ Add inner HTML for quantity input and Add to Cart button
+        card.innerHTML = `
+            <div class="product-card-inner p-2 flex flex-col items-center">
+                <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover rounded-lg">
+                <h3 class="text-base font-semibold mt-2">${product.name}</h3>
+                <p class="text-sm text-gray-500">${product.category}</p>
+                <p class="text-accent font-bold">R${product.price.toFixed(2)}</p>
+                <div class="flex items-center mt-2 space-x-2">
+                    <button class="add-to-cart-btn bg-primary text-white px-3 py-1 rounded">Add to Cart</button>
+                    <input type="number" min="1" max="100" value="1" class="qty-input w-16 text-center border rounded p-1 text-sm">
+                </div>
+            </div>
+        `;
         
-        // Append to the grid (which triggers connectedCallback)
         productsGrid.appendChild(card);
     });
     
-    attachCartListeners();
+    attachCartListeners(); // Now this will read the qty input properly
 }
+
     // --- Pagination Logic ---
     function renderPagination(totalPages) {
         if (!paginationContainer) return;
@@ -535,7 +583,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- Cart Functionality ---
-    const cart = [];
+    // const cart = [];
 
     const closeCartBtn = document.getElementById('close-cart');
     
@@ -548,6 +596,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    
 function updateCartDisplay() {
     const cartItemsContainer = document.getElementById('cart-items');
     const cartSubtotal = document.getElementById('cart-subtotal');
@@ -559,11 +609,12 @@ function updateCartDisplay() {
     if (!cartItemsContainer || !cartSubtotal || !cartTotal || !cartCount || !checkoutButton || !cartShipping) return;
 
     cartItemsContainer.innerHTML = '';
-    let subtotal = 0;
     const shippingFee = 10;
+    let subtotal = 0;
 
     if (cart.length === 0) {
-        cartItemsContainer.innerHTML = '<p class="text-center text-gray-500 italic py-10">Your bag is empty. Start adding some fresh kicks!</p>';
+        cartItemsContainer.innerHTML =
+            '<p class="text-center text-gray-500 italic py-10">Your bag is empty. Start adding some fresh kicks!</p>';
         checkoutButton.disabled = true;
         checkoutButton.classList.add('opacity-50', 'cursor-not-allowed');
     } else {
@@ -572,20 +623,45 @@ function updateCartDisplay() {
     }
 
     cart.forEach((item, index) => {
-        subtotal += item.price;
+        const qty = item.qty || 1;
+        const totalForItem = item.price * qty;
+        subtotal += totalForItem;
+
         const itemElement = document.createElement('div');
         itemElement.classList.add('flex', 'space-x-4', 'pb-4', 'border-b', 'border-gray-100');
         itemElement.innerHTML = `
-            <img src="${item.image || 'https://picsum.photos/80'}" alt="${item.name}" class="w-20 h-20 object-cover rounded-md flex-shrink-0">
+            <img src="${item.image || 'https://picsum.photos/80'}" alt="${item.name}" 
+                 class="w-20 h-20 object-cover rounded-md flex-shrink-0">
+
             <div class="flex-grow">
                 <p class="font-semibold text-primary text-base">${item.name}</p>
-                <p class="text-xs text-gray-500 mb-2">${item.category}</p>
-                <p class="font-bold text-accent">R${item.price.toFixed(2)}</p>
+                <p class="text-xs text-gray-500 mb-1">${item.category}</p>
+                
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600">Unit: <span class="unit-price">R${item.price.toFixed(2)}</span></p>
+                        <p class="font-bold text-accent total-price" data-index="${index}">
+                            R${totalForItem.toFixed(2)}
+                        </p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <label class="text-xs text-gray-600">Qty:</label>
+                        <input type="number"
+                            class="cart-qty-input w-14 h-7 text-center border border-gray-300 rounded-md text-sm"
+                            min="1"
+                            max="10"
+                            value="${qty}"
+                            data-index="${index}">
+                    </div>
+                </div>
             </div>
-            <button class="remove-item-btn text-gray-400 hover:text-red-500 transition-colors" data-index="${index}">
+
+            <button class="remove-item-btn text-gray-400 hover:text-red-500 transition-colors" 
+                    data-index="${index}">
                 <i data-feather="trash-2" class="w-5 h-5"></i>
             </button>
         `;
+
         if (typeof feather !== 'undefined') {
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = itemElement.innerHTML;
@@ -596,23 +672,38 @@ function updateCartDisplay() {
         cartItemsContainer.appendChild(itemElement);
     });
 
-    // Update subtotal
-    cartSubtotal.textContent = `R${subtotal.toFixed(2)}`;
-
-    // Update shipping display
     const appliedShipping = cart.length > 0 ? shippingFee : 0;
-    cartShipping.textContent = `R${appliedShipping.toFixed(2)}`;
-
-    // Update estimated total
     const totalWithShipping = subtotal + appliedShipping;
-    cartTotal.textContent = `R${totalWithShipping.toFixed(2)}`;
 
-    cartCount.textContent = cart.length;
+    cartSubtotal.textContent = `R${subtotal.toFixed(2)}`;
+    cartShipping.textContent = `R${appliedShipping.toFixed(2)}`;
+    cartTotal.textContent = `R${totalWithShipping.toFixed(2)}`;
+    cartCount.textContent = cart.reduce((acc, item) => acc + (item.qty || 1), 0);
 
     attachRemoveListeners();
 
-    // 🔑 Sync cart with localStorage
-    localStorage.setItem('cart', JSON.stringify(cart));
+    // Live quantity updates
+    document.querySelectorAll('.cart-qty-input').forEach(input => {
+        input.addEventListener('input', (e) => {
+            const index = parseInt(e.target.getAttribute('data-index'), 10);
+            const newQty = parseInt(e.target.value);
+            if (isNaN(newQty) || newQty < 1) return;
+
+            cart[index].qty = newQty;
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            // Update line total only (keep unit price fixed)
+            const priceEl = document.querySelector(`.total-price[data-index="${index}"]`);
+            const newTotal = cart[index].price * newQty;
+            priceEl.textContent = `R${newTotal.toFixed(2)}`;
+
+            // Update overall totals
+            const newSubtotal = cart.reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
+            cartSubtotal.textContent = `R${newSubtotal.toFixed(2)}`;
+            cartTotal.textContent = `R${(newSubtotal + appliedShipping).toFixed(2)}`;
+            cartCount.textContent = cart.reduce((acc, item) => acc + (item.qty || 1), 0);
+        });
+    });
 }
 
 
@@ -631,33 +722,45 @@ function updateCartDisplay() {
     }
 
     function attachCartListeners() {
-        document.querySelectorAll('product-card .add-to-cart-btn').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const card = e.target.closest('product-card'); 
+    document.querySelectorAll('product-card .add-to-cart-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const card = e.target.closest('product-card');
 
-                const productName = card.getAttribute('name');
-                const productCategory = card.getAttribute('category');
-                const productPrice = parseFloat(card.getAttribute('price')); 
-                const productImage = card.getAttribute('image');
+            const productName = card.getAttribute('name');
+            const productCategory = card.getAttribute('category');
+            const productPrice = parseFloat(card.getAttribute('price'));
+            const productImage = card.getAttribute('image');
 
-                const product = {
-                    name: productName,
-                    category: productCategory,
-                    price: productPrice,
-                    image: productImage
-                };
-                
-                cart.push(product);
-                updateCartDisplay();
-                
-                const cartModal = document.getElementById('cart-modal');
-                if (cartModal) {
-                    cartModal.classList.remove('hidden');
-                    cartModal.classList.add('flex');
-                }
-            });
+            // ✅ Read quantity from the input
+            const qtyInput = card.querySelector('.qty-input');
+            let qty = 1;
+            if (qtyInput) {
+                const parsedQty = parseInt(qtyInput.value);
+                if (!isNaN(parsedQty) && parsedQty > 0) qty = parsedQty;
+            }
+
+            const product = {
+                name: productName,
+                category: productCategory,
+                price: productPrice,
+                image: productImage,
+                qty: qty
+            };
+
+            cart.push(product);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartDisplay();
+
+            const cartModal = document.getElementById('cart-modal');
+            if (cartModal) {
+                cartModal.classList.remove('hidden');
+                cartModal.classList.add('flex');
+            }
         });
-    }
+    });
+}
+
+
 });
 
 // --- New Sale Pop-up Modal Logic ---
@@ -754,7 +857,7 @@ setupSalePopup();
 
 //Email Logic
 
-let cart = JSON.parse(localStorage.getItem('cart')) || [];
+// let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 function updateCartDisplay() {
   console.log('Cart display updated!');
@@ -845,17 +948,23 @@ function handleCheckout() {
   `;
   document.head.appendChild(style);
 
-  // Calculate totals
+  // Calculate totals including quantity
   let subtotal = 0;
-  cart.forEach(item => subtotal += item.price);
+  cart.forEach(item => {
+    const qty = item.qty || 1;
+    subtotal += item.price * qty;
+  });
+
   const shippingFee = 10;
   const appliedShipping = cart.length > 0 ? shippingFee : 0;
   const totalWithShipping = subtotal + appliedShipping;
 
-  // Create order summary
-  const cartSummary = cart.map(item =>
-    `${item.name} (${item.category}) @ R${item.price.toFixed(2)}`
-  ).join('\n');
+  // Create order summary including qty and total for each item
+  const cartSummary = cart.map(item => {
+    const qty = item.qty || 1;
+    const totalItemPrice = item.price * qty;
+    return `${item.name} (${item.category}) - Qty: ${qty} - Total: R${totalItemPrice.toFixed(2)}`;
+  }).join('\n');
 
   const templateParams = {
     customer_name: customerName,
@@ -886,16 +995,13 @@ function handleCheckout() {
       cart.length = 0;
       localStorage.setItem('cart', JSON.stringify(cart));
       updateCartDisplay();
-      // Refresh the page
-      location.reload();
+      location.reload(); // Refresh page
     })
-
     .catch(error => {
       console.error('Checkout Error:', error);
       alert('Checkout failed: Could not send confirmation email.');
     })
     .finally(() => {
-      // REMOVE LOADING SPINNER
       loadingOverlay.remove();
       style.remove();
     });
