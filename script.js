@@ -181,6 +181,13 @@ class ProductCard extends HTMLElement {
         const originalPriceFixed = parseFloat(originalPrice).toFixed(2);
         const priceFixed = parseFloat(price).toFixed(2);
 
+        // --- Size and Qty Inputs Setup ---
+        const ukSizes = Array.from({ length: 9 }, (_, i) => i + 3); // UK 3 to UK 11
+        const sizeOptionsHTML = ukSizes.map(size => 
+            `<option value="UK${size}">UK ${size}</option>`
+        ).join('');
+        // --- End Size and Qty Inputs Setup ---
+
         let badge = '';
         if (isDiscounted) {
             badge = '<span class="absolute top-4 left-4 bg-red-500 text-secondary text-xs font-bold px-3 py-1 rounded-full uppercase z-10 shadow-lg">SALE</span>';
@@ -207,7 +214,6 @@ class ProductCard extends HTMLElement {
             `;
         }
 
-        // ✅ Adjusted Qty input styling for better fit
         this.innerHTML = `
             <div class="product-card bg-secondary rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300 relative" data-category="${category.toLowerCase()}">
                 ${badge}
@@ -223,6 +229,14 @@ class ProductCard extends HTMLElement {
                         ${priceHTML}
                     </div>
 
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="flex-1">
+                            <label for="size-select-${name.replace(/\s/g, '-')}" class="block text-xs font-medium text-gray-700 mb-1">Size (UK)</label>
+                            <select id="size-select-${name.replace(/\s/g, '-')}" class="size-select w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-primary focus:border-primary">
+                                ${sizeOptionsHTML}
+                            </select>
+                        </div>
+                    </div>
                     <button class="add-to-cart-btn w-full bg-primary text-secondary text-base font-semibold rounded-xl px-4 py-2 hover:bg-accent transition-colors shadow-lg flex items-center justify-center space-x-2">
                         <i data-feather="shopping-cart" class="w-5 h-5"></i>
                         <span>Add to Cart</span>
@@ -247,9 +261,14 @@ class ProductCard extends HTMLElement {
 
         const productName = this.querySelector('h3').textContent.trim();
         const price = this.getAttribute('price');
+        
+        // --- New: Select size and quantity inputs
         const qtyInput = this.querySelector('.qty-input');
+        const sizeSelect = this.querySelector('.size-select');
 
         const quantity = parseInt(qtyInput ? qtyInput.value : 1);
+        const selectedSize = sizeSelect ? sizeSelect.value : 'N/A'; // Get selected size
+        // --- End New ---
 
         if (quantity < 1 || isNaN(quantity)) {
             alert("Please select a valid quantity (1 or more).");
@@ -261,7 +280,8 @@ class ProductCard extends HTMLElement {
             category: this.getAttribute('category'),
             price: parseFloat(price) * quantity,
             unitPrice: parseFloat(price),
-            quantity: quantity
+            quantity: quantity,
+            size: selectedSize // Include the selected size
         };
 
         this.dispatchEvent(new CustomEvent('product-added-to-cart', {
@@ -273,7 +293,6 @@ class ProductCard extends HTMLElement {
         if (qtyInput) {
             qtyInput.value = 1;
         }
-
     }
 }
 
@@ -627,6 +646,9 @@ function updateCartDisplay() {
         const totalForItem = item.price * qty;
         subtotal += totalForItem;
 
+        // ✅ FIX: Ensure size is a valid string, otherwise default to 'N/A'
+        const productSize = item.size && item.size.trim() !== '' ? item.size : 'N/A';
+
         const itemElement = document.createElement('div');
         itemElement.classList.add('flex', 'space-x-4', 'pb-4', 'border-b', 'border-gray-100');
         itemElement.innerHTML = `
@@ -636,6 +658,8 @@ function updateCartDisplay() {
             <div class="flex-grow">
                 <p class="font-semibold text-primary text-base">${item.name}</p>
                 <p class="text-xs text-gray-500 mb-1">${item.category}</p>
+                
+                <p class="text-sm text-gray-600 mb-1">Size: <span class="size-display font-medium">${productSize}</span></p>
                 
                 <div class="flex items-center justify-between">
                     <div>
@@ -706,8 +730,6 @@ function updateCartDisplay() {
     });
 }
 
-
-
     function attachRemoveListeners() {
         document.querySelectorAll('.remove-item-btn').forEach(button => {
             button.addEventListener('click', (e) => {
@@ -720,37 +742,66 @@ function updateCartDisplay() {
             });
         });
     }
-
-    function attachCartListeners() {
+function attachCartListeners() {
     document.querySelectorAll('product-card .add-to-cart-btn').forEach(button => {
         button.addEventListener('click', (e) => {
             const card = e.target.closest('product-card');
 
+            // --- 1. Get Base Product Details ---
             const productName = card.getAttribute('name');
             const productCategory = card.getAttribute('category');
-            const productPrice = parseFloat(card.getAttribute('price'));
+            const unitPrice = parseFloat(card.getAttribute('price')); // Use unitPrice here
             const productImage = card.getAttribute('image');
 
-            // ✅ Read quantity from the input
+            // --- 2. CRITICAL: Read Quantity and Size from Inputs ---
+            
+            // Read quantity from the input
             const qtyInput = card.querySelector('.qty-input');
             let qty = 1;
             if (qtyInput) {
                 const parsedQty = parseInt(qtyInput.value);
                 if (!isNaN(parsedQty) && parsedQty > 0) qty = parsedQty;
             }
+            
+            // ✅ NEW: Read the selected size
+            const sizeSelect = card.querySelector('.size-select');
+            const selectedSize = sizeSelect ? sizeSelect.value : 'N/A';
+
 
             const product = {
                 name: productName,
                 category: productCategory,
-                price: productPrice,
+                price: unitPrice, // Storing unit price is cleaner for calculations
                 image: productImage,
-                qty: qty
+                qty: qty,
+                size: selectedSize // ✅ NEW: Include the size
             };
 
-            cart.push(product);
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartDisplay();
+            // --- 3. CRITICAL: Update Cart Logic ---
+            
+            // Find an item with the exact same name AND size
+            const existingItemIndex = cart.findIndex(item => 
+                item.name === product.name && item.size === product.size
+            );
 
+            if (existingItemIndex !== -1) {
+                // Item with same name and size exists: ONLY increase quantity
+                cart[existingItemIndex].qty += product.qty;
+            } else {
+                // Item with this size is new, add it to the cart
+                cart.push(product);
+            }
+            
+            // Reset quantity input after adding to cart
+            if (qtyInput) {
+                qtyInput.value = 1; 
+            }
+
+            // --- 4. Update Persistence and Display ---
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartDisplay(); // This re-renders the cart modal content
+
+            // Open the cart modal
             const cartModal = document.getElementById('cart-modal');
             if (cartModal) {
                 cartModal.classList.remove('hidden');
@@ -912,73 +963,74 @@ function showCheckoutForm() {
 }
 
 function handleCheckout() {
-  const customerName = document.getElementById('customer-name').value.trim();
-  const customerEmail = document.getElementById('customer-email').value.trim();
-  const customerPhone = document.getElementById('customer-phone').value.trim();
+  const customerName = document.getElementById('customer-name').value.trim();
+  const customerEmail = document.getElementById('customer-email').value.trim();
+  const customerPhone = document.getElementById('customer-phone').value.trim();
 
-  if (!customerName || !customerEmail || !customerPhone) {
-    alert("Please fill in all fields before confirming.");
-    return;
-  }
+  if (!customerName || !customerEmail || !customerPhone) {
+    alert("Please fill in all fields before confirming.");
+    return;
+  }
 
-  // ------------------------
-  // SHOW LOADING SPINNER
-  // ------------------------
-  const loadingOverlay = document.createElement('div');
-  loadingOverlay.id = 'loading-overlay';
-  loadingOverlay.style.position = 'fixed';
-  loadingOverlay.style.top = '0';
-  loadingOverlay.style.left = '0';
-  loadingOverlay.style.width = '100%';
-  loadingOverlay.style.height = '100%';
-  loadingOverlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
-  loadingOverlay.style.display = 'flex';
-  loadingOverlay.style.justifyContent = 'center';
-  loadingOverlay.style.alignItems = 'center';
-  loadingOverlay.style.zIndex = '9999';
-  loadingOverlay.innerHTML = `<div style="border:6px solid #f3f3f3; border-top:6px solid #3498db; border-radius:50%; width:50px; height:50px; animation:spin 1s linear infinite;"></div>`;
-  document.body.appendChild(loadingOverlay);
+  // ------------------------
+  // SHOW LOADING SPINNER
+  // ------------------------
+  const loadingOverlay = document.createElement('div');
+  loadingOverlay.id = 'loading-overlay';
+  loadingOverlay.style.position = 'fixed';
+  loadingOverlay.style.top = '0';
+  loadingOverlay.style.left = '0';
+  loadingOverlay.style.width = '100%';
+  loadingOverlay.style.height = '100%';
+  loadingOverlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
+  loadingOverlay.style.display = 'flex';
+  loadingOverlay.style.justifyContent = 'center';
+  loadingOverlay.style.alignItems = 'center';
+  loadingOverlay.style.zIndex = '9999';
+  loadingOverlay.innerHTML = `<div style="border:6px solid #f3f3f3; border-top:6px solid #3498db; border-radius:50%; width:50px; height:50px; animation:spin 1s linear infinite;"></div>`;
+  document.body.appendChild(loadingOverlay);
 
-  const style = document.createElement('style');
-  style.innerHTML = `
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  `;
-  document.head.appendChild(style);
+  const style = document.createElement('style');
+  style.innerHTML = `
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  `;
+  document.head.appendChild(style);
 
-  // Calculate totals including quantity
-  let subtotal = 0;
-  cart.forEach(item => {
-    const qty = item.qty || 1;
-    subtotal += item.price * qty;
-  });
+  // Calculate totals including quantity
+  let subtotal = 0;
+  cart.forEach(item => {
+    const qty = item.qty || 1;
+    subtotal += item.price * qty;
+  });
 
-  const shippingFee = 10;
-  const appliedShipping = cart.length > 0 ? shippingFee : 0;
-  const totalWithShipping = subtotal + appliedShipping;
+  const shippingFee = 10;
+  const appliedShipping = cart.length > 0 ? shippingFee : 0;
+  const totalWithShipping = subtotal + appliedShipping;
 
-  // Create order summary including qty and total for each item
-  const cartSummary = cart.map(item => {
-    const qty = item.qty || 1;
-    const totalItemPrice = item.price * qty;
-    return `${item.name} (${item.category}) - Qty: ${qty} - Total: R${totalItemPrice.toFixed(2)}`;
-  }).join('\n');
+  // Create order summary including qty, size, and total for each item
+  const cartSummary = cart.map(item => {
+    const qty = item.qty || 1;
+    const totalItemPrice = item.price * qty;
+    // ⭐ ADDED SIZE LOGIC HERE ⭐
+    const productSize = item.size && item.size.trim() !== '' ? item.size : 'N/A';
+    // ⭐ UPDATED RETURN STRING TO INCLUDE SIZE ⭐
+    return `${item.name} (${item.category}) - Size: ${productSize} - Qty: ${qty} - Total: R${totalItemPrice.toFixed(2)}`;
+  }).join('\n');
 
-  const templateParams = {
-    customer_name: customerName,
-    customer_email: customerEmail,
-    customer_phone: customerPhone,
-    order_items: cartSummary,
-    subtotal: `R${subtotal.toFixed(2)}`,
-    shipping_fee: `R${appliedShipping.toFixed(2)}`,
-    total_amount: `R${totalWithShipping.toFixed(2)}`,
-    order_number: Date.now(),
-    payment_info: `
-       Welcome To The Sneaker Stud! 
-
-When Placing Your Order Please Send Us A Screenshot Of The Sneaker You Want , Size & Colour. 
+  const templateParams = {
+    customer_name: customerName,
+    customer_email: customerEmail,
+    customer_phone: customerPhone,
+    order_items: cartSummary,
+    subtotal: `R${subtotal.toFixed(2)}`,
+    shipping_fee: `R${appliedShipping.toFixed(2)}`,
+    total_amount: `R${totalWithShipping.toFixed(2)}`,
+    order_number: Date.now(),
+    payment_info: `
+       Welcome To The Sneaker Stud! 
 
 You Then Make A Payment That Includes The Shipping Amount. 
 
@@ -991,12 +1043,12 @@ We Use The Large Bag.
 You May Also Choose Any Courier Of Your Choice.
 
 Account details
-Bank name:	Standard Bank
-Branch name:	ROSEBANK            
-Branch code:	4305
-Account holder:	THE DIRECTOR KWAKHANYA EZWENI PTY LTD KWAKHANYA EZWENI PTY LTD
-Account number:	10 20 110 974 1
-Account type:	CURRENT
+Bank name:  Standard Bank
+Branch name:    ROSEBANK            
+Branch code:    4305
+Account holder: THE DIRECTOR KWAKHANYA EZWENI PTY LTD KWAKHANYA EZWENI PTY LTD
+Account number: 10 20 110 974 1
+Account type:   CURRENT
 
 Please Use Your Name As Your Reference. 
 If You Are Going To Deposit Into A Standard Bank ATM, Please Add R10 For Charges. 
@@ -1006,28 +1058,27 @@ Once You Have Made Payment , Please Send Your Proof Of Payment Along With Your P
 Once This Has Been Done Please Give Us A Minimum Of 3 Business Days To Ship Your Sneaker. 
 
 We Look Forward To Doing Business With You.
-    `
-  };
+    `
+  };
 
-  emailjs.send('service_n6cw895', 'template_vzwck3k', templateParams)
-    .then(() => {
-      alert(`🎉 Thank you ${customerName}! Your order has been confirmed. An Invoice has been sent to ${customerEmail}.`);
+  emailjs.send('service_n6cw895', 'template_vzwck3k', templateParams)
+    .then(() => {
+      alert(`🎉 Thank you ${customerName}! Your order has been confirmed. An Invoice has been sent to ${customerEmail}.`);
 
-      cart.length = 0;
-      localStorage.setItem('cart', JSON.stringify(cart));
-      updateCartDisplay();
-      location.reload(); // Refresh page
-    })
-    .catch(error => {
-      console.error('Checkout Error:', error);
-      alert('Checkout failed: Could not send confirmation email.');
-    })
-    .finally(() => {
-      loadingOverlay.remove();
-      style.remove();
-    });
+      cart.length = 0;
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartDisplay();
+      location.reload(); // Refresh page
+    })
+    .catch(error => {
+      console.error('Checkout Error:', error);
+      alert('Checkout failed: Could not send confirmation email.');
+    })
+    .finally(() => {
+      loadingOverlay.remove();
+      style.remove();
+    });
 }
-
 // Attach listener (with fallback selectors)
 function attachCheckoutListener() {
   const checkoutButton =
