@@ -317,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Page 3 - Prices updated with hypothetical originalPrice
     { id: 1, name: "Nike Air Max ", category: "Nike ", price: 1099.00, originalPrice: 1099.00, image: "item32.jpg", isNew: true },
-    { id: 2, name: "Nike Air Max 1", category: "Nike", price: 1399.00, originalPrice: 1599.00, image: "item33.jpg", isNew: false },
+    { id: 2, name: "Nike Air Max 1", category: "Nike", price: 950.00, originalPrice: 1200.00, image: "item33.jpg", isNew: false },
     { id: 3, name: "Nike Air Max", category: "Nike", price: 1199.00, originalPrice: 1399.00, image: "item34.jpg", isNew: true },
     { id: 4, name: "Nike", category: "Nike", price: 1199.00, originalPrice: 1199.00, image: "item35.jpg", isNew: true },
     { id: 5, name: "Nike Orange", category: "Nike", price: 950.00, originalPrice: 1200.00, image: "item36.jpg", isNew: false },
@@ -352,8 +352,8 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 10, name: "Kids Jordan Retro 4 ", category: "Nike", price: 600.00, originalPrice: 1000.00, image: "item62.jpg", isNew: false },
         //page 6
     { id: 1, name: "Nike Shox TL", category: "Nike", price: 1300.00, originalPrice: 1800.00, image: "item64.jpg", isNew: true },
-    { id: 2, name: "Nike Shox TL", category: "Nike White ", price: 1300.00, originalPrice: 1800.00, image: "item65.jpg", isNew: false },
-    { id: 3, name: "Nike Shox TL", category: "Nike Black", price: 1350.00, originalPrice: 1800.00, image: "item66.jpg", isNew: true },
+    { id: 2, name: "Nike Shox TL White", category: "Nike", price: 1300.00, originalPrice: 1800.00, image: "item65.jpg", isNew: false },
+    { id: 3, name: "Nike Shox TL Black", category: "Nike", price: 1300.00, originalPrice: 1800.00, image: "item66.jpg", isNew: true },
     { id: 4, name: "Nike Shox Z", category: "Nike", price: 1300.00, originalPrice: 1800.00, image: "item67.jpg", isNew: true },
     { id: 5, name: "Nike Shox Z", category: "Nike", price: 1300.00, originalPrice: 1800.00, image: "item68.jpg", isNew: false },
     { id: 6, name: "Nike Shox Z", category: "Nike", price: 1300.00, originalPrice: 1800.00, image: "item69.jpg", isNew: false },
@@ -363,8 +363,8 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 10, name: "New Balance ", category: "New Balance", price: 1000.00, originalPrice: 1200.00, image: "item2.jpg", isNew: false },
 
    //page 7
-    { id: 1, name: "Nike ", category: "Nike", price: 1000.00, originalPrice: 1200.00, image: "item3.jpg", isNew: true },
-    { id: 2, name: "Nike", category: "Nike White ", price: 1150.00, originalPrice: 1400.00, image: "item4.jpg", isNew: false },
+    { id: 1, name: "Nike Bailleli Blanco", category: "Nike", price: 1000.00, originalPrice: 1200.00, image: "item3.jpg", isNew: true },
+    { id: 2, name: "Nike Dunk", category: "Nike", price: 1150.00, originalPrice: 1400.00, image: "item4.jpg", isNew: false },
     { id: 3, name: "Adidas", category: "Adidas", price: 1050.00, originalPrice: 1300.00, image: "item7.jpg", isNew: false },
     { id: 4, name: "Nike T-Shirt", category: "Nike T-Shirt", price: 150.00, originalPrice: 250.00, image: "item57.jpg", isNew: false },
     { id: 5, name: "Nike T-Shirt", category: "Nike T-Shirt", price: 150.00, originalPrice: 250.00, image: "item56.jpg", isNew: false },
@@ -976,15 +976,36 @@ function handleCheckout() {
     total_amount: `R${totalWithShipping.toFixed(2)}`,
     order_number: Date.now(),
     payment_info: `
-        Account details:
-        Bank name: Standard Bank
-        Branch name: ROSEBANK
-        Branch code: 4305
-        Account holder: THE DIRECTOR KWAKHANYA EZWENI PTY LTD
-        Account number: 10201109741
-        Account type: CURRENT
+       Welcome To The Sneaker Stud! 
 
-        ⚠️ Please respond to this email with proof of payment once you have completed the transfer.
+When Placing Your Order Please Send Us A Screenshot Of The Sneaker You Want , Size & Colour. 
+
+You Then Make A Payment That Includes The Shipping Amount. 
+
+Paxi: 
+We Use The Large Bag. 
+
+3-5 days - R150
+7-9 days - R120 
+
+You May Also Choose Any Courier Of Your Choice.
+
+Account details
+Bank name:	Standard Bank
+Branch name:	ROSEBANK            
+Branch code:	4305
+Account holder:	THE DIRECTOR KWAKHANYA EZWENI PTY LTD KWAKHANYA EZWENI PTY LTD
+Account number:	10 20 110 974 1
+Account type:	CURRENT
+
+Please Use Your Name As Your Reference. 
+If You Are Going To Deposit Into A Standard Bank ATM, Please Add R10 For Charges. 
+
+Once You Have Made Payment , Please Send Your Proof Of Payment Along With Your Pep Code. 
+
+Once This Has Been Done Please Give Us A Minimum Of 3 Business Days To Ship Your Sneaker. 
+
+We Look Forward To Doing Business With You.
     `
   };
 
