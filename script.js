@@ -97,65 +97,7 @@ customElements.define('custom-navbar', CustomNavbar);
 
 // components/custom-footer.js
 class CustomFooter extends HTMLElement {
-    connectedCallback() {
-        const currentYear = new Date().getFullYear(); 
-        
-        this.innerHTML = `
-            <footer class="bg-primary text-secondary py-12 mt-12">
-                <div class="container mx-auto px-4">
-                    <div class="grid grid-cols-2 md:grid-cols-5 gap-8 border-b border-gray-700 pb-8 mb-8">
-                        <div>
-                            <h4 class="text-base font-bold mb-4 uppercase text-accent">Shop</h4>
-                            <ul class="space-y-2 text-sm text-gray-300">
-                                <li><a href="#" class="hover:text-secondary transition-colors">Men's</a></li>
-                                <li><a href="#" class="hover:text-secondary transition-colors">Women's</a></li>
-                                <li><a href="#" class="hover:text-secondary transition-colors">New Releases</a></li>
-                                <li><a href="#" class="hover:text-secondary transition-colors">Sale Items</a></li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 class="text-base font-bold mb-4 uppercase text-accent">Support</h4>
-                            <ul class="space-y-2 text-sm text-gray-300">
-                                <li><a href="#" class="hover:text-secondary transition-colors">Order Status</a></li>
-                                <li><a href="#" class="hover:text-secondary transition-colors">Shipping & Returns</a></li>
-                                <li><a href="#" class="hover:text-secondary transition-colors">Contact Us</a></li>
-                                <li><a href="#" class="hover:text-secondary transition-colors">FAQ</a></li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 class="text-base font-bold mb-4 uppercase text-accent">Company</h4>
-                            <ul class="space-y-2 text-sm text-gray-300">
-                                <li><a href="#" class="hover:text-secondary transition-colors">About Us</a></li>
-                                <li><a href="#" class="hover:text-secondary transition-colors">Careers</a></li>
-                                <li><a href="#" class="hover:text-secondary transition-colors">Affiliates</a></li>
-                            </ul>
-                        </div>
-                        <div class="col-span-2 md:col-span-2">
-                            <h4 class="text-base font-bold mb-4 uppercase text-accent">Connect</h4>
-                            <div class="flex space-x-4">
-                                <a href="#" class="text-gray-400 hover:text-accent"><i data-feather="twitter" class="w-6 h-6"></i></a>
-                                <a href="#" class="text-gray-400 hover:text-accent"><i data-feather="facebook" class="w-6 h-6"></i></a>
-                                <a href="#" class="text-gray-400 hover:text-accent"><i data-feather="instagram" class="w-6 h-6"></i></a>
-                            </div>
-                            <h4 class="text-base font-bold mt-6 mb-4 uppercase text-accent">Newsletter</h4>
-                            <p class="text-sm text-gray-300">Get the latest drops directly to your inbox.</p>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col md:flex-row justify-between items-center text-gray-500 text-xs">
-                        <p>&copy; ${currentYear} Sneaker Stud, Inc. All Rights Reserved.</p>
-                        <div class="flex space-x-4 mt-4 md:mt-0">
-                            <a href="#" class="hover:text-secondary">Terms of Use</a>
-                            <a href="#" class="hover:text-secondary">Privacy Policy</a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-        `;
-        if (typeof feather !== 'undefined') {
-            feather.replace();
-        }
-    }
+  
 }
 customElements.define('custom-footer', CustomFooter);
 
@@ -169,8 +111,8 @@ class ProductCard extends HTMLElement {
     }
 
     connectedCallback() {
-        const name = this.getAttribute('name') || 'New Performance Runner';
-        const category = this.getAttribute('category') || 'Running';
+        const name = this.getAttribute('name') || 'New Product';
+        const category = this.getAttribute('category') || 'Misc';
         const price = this.getAttribute('price') || '150.00';
         const originalPrice = this.getAttribute('original-price') || price;
         const image = this.getAttribute('image') || 'https://picsum.photos/id/42/400/300';
@@ -181,20 +123,33 @@ class ProductCard extends HTMLElement {
         const originalPriceFixed = parseFloat(originalPrice).toFixed(2);
         const priceFixed = parseFloat(price).toFixed(2);
 
-        // --- Size and Qty Inputs Setup ---
-        const ukSizes = Array.from({ length: 9 }, (_, i) => i + 3); // UK 3 to UK 11
-        const sizeOptionsHTML = ukSizes.map(size => 
-            `<option value="UK${size}">UK ${size}</option>`
-        ).join('');
-        // --- End Size and Qty Inputs Setup ---
+        // --- Size Options Based on Category ---
+        let sizeOptionsHTML = '';
+        let showSizeSelect = true;
+        const catLower = category.toLowerCase();
 
-        let badge = '';
-        if (isDiscounted) {
-            badge = '<span class="absolute top-4 left-4 bg-red-500 text-secondary text-xs font-bold px-3 py-1 rounded-full uppercase z-10 shadow-lg">SALE</span>';
-        } else if (isNew) {
-            badge = '<span class="absolute top-4 left-4 bg-accent text-secondary text-xs font-bold px-3 py-1 rounded-full uppercase z-10 shadow-lg">NEW</span>';
+        if (catLower.includes('t-shirt')) {
+            const tshirtSizes = ['S', 'M', 'L', 'XL', 'XXL'];
+            sizeOptionsHTML = tshirtSizes.map(size => `<option value="${size}">${size}</option>`).join('');
+        } else if (catLower.includes('bags')) {
+            // Bags have one size
+            sizeOptionsHTML = `<option value="One Size">One Size</option>`;
+            showSizeSelect = false; // Optionally hide dropdown
+        } else {
+            // Default to shoe sizes
+            const ukSizes = Array.from({ length: 9 }, (_, i) => i + 3);
+            sizeOptionsHTML = ukSizes.map(size => `<option value="UK${size}">UK ${size}</option>`).join('');
         }
 
+        // --- Badge ---
+        let badge = '';
+        if (isDiscounted) {
+            badge = `<span class="absolute top-4 left-4 bg-red-500 text-secondary text-xs font-bold px-3 py-1 rounded-full uppercase z-10 shadow-lg">SALE</span>`;
+        } else if (isNew) {
+            badge = `<span class="absolute top-4 left-4 bg-accent text-secondary text-xs font-bold px-3 py-1 rounded-full uppercase z-10 shadow-lg">NEW</span>`;
+        }
+
+        // --- Price Display ---
         let priceHTML = '';
         if (isDiscounted) {
             priceHTML = `
@@ -214,6 +169,7 @@ class ProductCard extends HTMLElement {
             `;
         }
 
+        // --- Render HTML ---
         this.innerHTML = `
             <div class="product-card bg-secondary rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300 relative" data-category="${category.toLowerCase()}">
                 ${badge}
@@ -229,14 +185,19 @@ class ProductCard extends HTMLElement {
                         ${priceHTML}
                     </div>
 
+                    ${showSizeSelect ? `
                     <div class="flex items-center space-x-4 mb-4">
                         <div class="flex-1">
-                            <label for="size-select-${name.replace(/\s/g, '-')}" class="block text-xs font-medium text-gray-700 mb-1">Size (UK)</label>
+                            <label for="size-select-${name.replace(/\s/g, '-')}" class="block text-xs font-medium text-gray-700 mb-1">
+                                Size
+                            </label>
                             <select id="size-select-${name.replace(/\s/g, '-')}" class="size-select w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-primary focus:border-primary">
                                 ${sizeOptionsHTML}
                             </select>
                         </div>
                     </div>
+                    ` : ''}
+
                     <button class="add-to-cart-btn w-full bg-primary text-secondary text-base font-semibold rounded-xl px-4 py-2 hover:bg-accent transition-colors shadow-lg flex items-center justify-center space-x-2">
                         <i data-feather="shopping-cart" class="w-5 h-5"></i>
                         <span>Add to Cart</span>
@@ -245,6 +206,7 @@ class ProductCard extends HTMLElement {
             </div>
         `;
 
+        // --- Event Listener ---
         const addToCartButton = this.querySelector('.add-to-cart-btn');
         if (addToCartButton) {
             addToCartButton.removeEventListener('click', this.handleAddToCart);
@@ -261,14 +223,12 @@ class ProductCard extends HTMLElement {
 
         const productName = this.querySelector('h3').textContent.trim();
         const price = this.getAttribute('price');
-        
-        // --- New: Select size and quantity inputs
+
         const qtyInput = this.querySelector('.qty-input');
         const sizeSelect = this.querySelector('.size-select');
 
         const quantity = parseInt(qtyInput ? qtyInput.value : 1);
-        const selectedSize = sizeSelect ? sizeSelect.value : 'N/A'; // Get selected size
-        // --- End New ---
+        const selectedSize = sizeSelect ? sizeSelect.value : 'One Size';
 
         if (quantity < 1 || isNaN(quantity)) {
             alert("Please select a valid quantity (1 or more).");
@@ -281,7 +241,7 @@ class ProductCard extends HTMLElement {
             price: parseFloat(price) * quantity,
             unitPrice: parseFloat(price),
             quantity: quantity,
-            size: selectedSize // Include the selected size
+            size: selectedSize
         };
 
         this.dispatchEvent(new CustomEvent('product-added-to-cart', {
@@ -290,9 +250,7 @@ class ProductCard extends HTMLElement {
             composed: true
         }));
 
-        if (qtyInput) {
-            qtyInput.value = 1;
-        }
+        if (qtyInput) qtyInput.value = 1;
     }
 }
 
@@ -362,9 +320,9 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 1, name: "Converse All Star", category: "Converse", price: 1000.00, originalPrice: 1200.00, image: "item52.jpg", isNew: true },
     { id: 2, name: "New Balance ", category: "New Balance ", price: 1200.00, originalPrice: 1500.00, image: "item53.jpg", isNew: false },
     { id: 3, name: "Nike Men’s Shox", category: "Nike", price: 1150.00, originalPrice: 1300.00, image: "item54.jpg", isNew: true },
-    { id: 4, name: "Ted Baker", category: "Ted Baker", price: 450.00, originalPrice: 700.00, image: "item58.jpg", isNew: true },
-    { id: 5, name: "Ted Baker ", category: "Ted Baker ", price: 450.00, originalPrice: 700.00, image: "item76.jpg", isNew: false },
-    { id: 6, name: "Ted Baker (Crocodile Skin)", category: "Ted Baker", price: 450.00, originalPrice: 700.00, image: "item75.jpg", isNew: true },
+    { id: 4, name: "Ted Baker", category: "Bags", price: 450.00, originalPrice: 700.00, image: "item58.jpg", isNew: true },
+    { id: 5, name: "Ted Baker ", category: "Bags ", price: 450.00, originalPrice: 700.00, image: "item76.jpg", isNew: false },
+    { id: 6, name: "Ted Baker (Crocodile Skin)", category: "Bags", price: 450.00, originalPrice: 700.00, image: "item75.jpg", isNew: true },
     { id: 7, name: "Nike Dunk Low Kids", category: "Nike", price: 500.00, originalPrice: 850.00, image: "item59.jpg", isNew: false },
     { id: 8, name: "New Balance 550 ", category: "New Balance", price: 1000.00, originalPrice: 1300.00, image: "item60.jpg", isNew: true },
     { id: 9, name: "Air Jordan 3 Retro ", category: "Nike", price: 1800.00, originalPrice: 2500.00, image: "item61.jpg", isNew: false },
@@ -910,33 +868,29 @@ setupSalePopup();
 
 // let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-function updateCartDisplay() {
-  console.log('Cart display updated!');
-}
-
-// Show the checkout form dynamically
 function showCheckoutForm() {
     if (cart.length === 0) {
         alert("Your cart is empty. Please add items before checking out.");
         return;
     }
-    
+
     const cartModal = document.getElementById('cart-modal');
     if (cartModal) cartModal.classList.add('hidden');
-    
-    const existingForm = document.getElementById('checkout-form-container');
-    if (existingForm) existingForm.remove();
+
+    const existingFormContainer = document.getElementById('checkout-form-container');
+    if (existingFormContainer) existingFormContainer.remove();
 
     const formContainer = document.createElement('div');
     formContainer.id = 'checkout-form-container';
     formContainer.className = 'fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-50';
+
     formContainer.innerHTML = `
         <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-xs transform transition-all duration-300 scale-100">
             <h2 class="text-xl font-bold mb-5 text-center text-gray-800">Complete Your Order</h2>
             <form id="checkout-form" class="space-y-3">
-                <input type="text" id="customer-name" class="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-800 transition duration-150" placeholder="Full Name" required>
-                <input type="email" id="customer-email" class="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-800 transition duration-150" placeholder="Email Address" required>
-                <input type="tel" id="customer-phone" class="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-800 transition duration-150" placeholder="Cell Number" required>
+                <input type="text" id="customer-name" name="Name" class="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-800 transition duration-150" placeholder="Full Name" required>
+                <input type="email" id="customer-email" name="Email" class="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-800 transition duration-150" placeholder="Email Address" required>
+                <input type="tel" id="customer-phone" name="Phone" class="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-800 transition duration-150" placeholder="Cell Number" required>
                 
                 <div class="flex flex-col space-y-2 pt-3">
                     <button type="submit" class="w-full bg-blue-900 text-white font-semibold text-sm py-2 rounded-md shadow-sm hover:bg-blue-800 transition duration-150">
@@ -949,136 +903,176 @@ function showCheckoutForm() {
             </form>
         </div>
     `;
+
     document.body.appendChild(formContainer);
 
+    const checkoutForm = document.getElementById('checkout-form');
+
+    // Main FormSubmit endpoint
+    checkoutForm.action = "https://formsubmit.co/info@sneakerstud.co.za";
+    checkoutForm.method = "POST";
+
+    // Hidden fields for FormSubmit configuration
+    const hiddenFieldsHtml = `
+        <input type="hidden" name="_cc" value="info@sneakerstud.co.za">
+        <input type="hidden" name="_replyto" value="">
+        <input type="hidden" name="_autoresponse" value="Thank you for your purchase! We’ll be in touch soon with your order details.">
+        <input type="hidden" name="_next" value="https://sneakerstud.co.za/thank-you.html">
+    `;
+
+    // Handle submission
+    checkoutForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const customerName = document.getElementById('customer-name').value.trim();
+        const customerEmail = document.getElementById('customer-email').value.trim();
+        const customerPhone = document.getElementById('customer-phone').value.trim();
+
+        if (!customerName || !customerEmail || !customerPhone) {
+            alert("Please fill in all fields before confirming.");
+            return;
+        }
+
+        // Inject dynamic hidden fields
+        const dynamicHidden = document.createElement('div');
+        dynamicHidden.innerHTML = hiddenFieldsHtml;
+
+        // Update CC & reply email dynamically
+        dynamicHidden.querySelector('input[name="_cc"]').value = 
+            `info@sneakerstud.co.za,${customerEmail}`;
+        dynamicHidden.querySelector('input[name="_replyto"]').value = customerEmail;
+
+        checkoutForm.insertAdjacentElement('beforeend', dynamicHidden);
+
+        // Include cart data before submission
+        handleFormSubmission(e);
+    });
+
+    // Cancel button
     document.getElementById('cancel-checkout').addEventListener('click', () => {
         formContainer.remove();
         if (cartModal) cartModal.classList.remove('hidden');
     });
+}
 
-    document.getElementById('checkout-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        handleCheckout(formContainer);
+async function handleFormSubmission(event) {
+    event.preventDefault();
+
+    const checkoutForm = document.getElementById('checkout-form');
+    const customerName = document.getElementById('customer-name').value.trim();
+    const customerEmail = document.getElementById('customer-email').value.trim();
+    const customerPhone = document.getElementById('customer-phone').value.trim();
+
+    if (!customerName || !customerEmail || !customerPhone) {
+        alert("Please fill in all required fields before confirming.");
+        return;
+    }
+
+    if (!cart || cart.length === 0) {
+        alert("Your cart is empty. Please add items before checking out.");
+        return;
+    }
+
+    // --- 1. Calculate Totals ---
+    let subtotal = 0;
+    cart.forEach(item => {
+        const qty = item.qty || 1;
+        subtotal += item.price * qty;
     });
+
+    const shippingFee = 10;
+    const appliedShipping = cart.length > 0 ? shippingFee : 0;
+    const totalWithShipping = subtotal + appliedShipping;
+
+    // --- 2. Create Detailed Summary ---
+    const cartSummary = cart.map((item, index) => {
+        const qty = item.qty || 1;
+        const totalItemPrice = item.price * qty;
+        const productSize = item.size && item.size.trim() !== '' ? item.size : 'N/A';
+        const imageUrl = item.image.startsWith('http') ? item.image : `https://sneakerstud.co.za/${item.image}`;
+
+        return `
+--- ITEM ${index + 1} ---
+- Product: ${item.name} (${item.category})
+- Size: ${productSize}
+- Quantity: ${qty}
+- Item Total: R${totalItemPrice.toFixed(2)}
+- Image URL: ${imageUrl}`;
+    }).join('\n');
+
+    const paymentInstructions = `
+Welcome To The Sneaker Stud! 
+You Then Make A Payment That Includes The Shipping Amount. Paxi: We Use The Large Bag.
+ 3-5 days - R150 7-9 days - R120 You May Also Choose Any Courier Of Your Choice. 
+ 
+ Account details Bank name: 
+
+ Standard Bank Branch name: 
+ ROSEBANK Branch code: 4305 
+ Account holder: THE DIRECTOR KWAKHANYA EZWENI PTY LTD 
+ Account number: 10 20 110 974 1 
+ Account type: CURRENT 
+ Please Use Your Name As Your Reference. 
+Once You Have Made Payment, Please Send Your Proof Of Payment Along With Your Pep Code. 
+Please Allow 3-5 Business Days To Ship Your Sneaker. 
+We Look Forward To Doing Business With You. ;
+    `;
+
+    const orderData = {
+        customerName,
+        customerEmail,
+        customerPhone,
+        cartSummary,
+        subtotal: subtotal.toFixed(2),
+        appliedShipping: appliedShipping.toFixed(2),
+        totalWithShipping: totalWithShipping.toFixed(2),
+        orderNumber: Date.now(),
+        paymentInstructions
+    };
+
+    // --- SEND TO BACKEND VIA NODEMAILER ---
+    try {
+        // const response = await fetch("http://localhost:3000/send-email", {
+        //     method: "POST",
+        //     headers: { "Content-Type": "application/json" },
+        //     body: JSON.stringify(orderData)
+        // });
+
+        const response = await fetch("https://sneakerstud.co.za/send-email", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(orderData)
+});
+
+if (!response.ok) {
+    console.error("Failed to send order:", response.statusText);
 }
 
-function handleCheckout() {
-  const customerName = document.getElementById('customer-name').value.trim();
-  const customerEmail = document.getElementById('customer-email').value.trim();
-  const customerPhone = document.getElementById('customer-phone').value.trim();
 
-  if (!customerName || !customerEmail || !customerPhone) {
-    alert("Please fill in all fields before confirming.");
-    return;
-  }
+        const result = await response.json();
+        alert(result.message);
 
-  // ------------------------
-  // SHOW LOADING SPINNER
-  // ------------------------
-  const loadingOverlay = document.createElement('div');
-  loadingOverlay.id = 'loading-overlay';
-  loadingOverlay.style.position = 'fixed';
-  loadingOverlay.style.top = '0';
-  loadingOverlay.style.left = '0';
-  loadingOverlay.style.width = '100%';
-  loadingOverlay.style.height = '100%';
-  loadingOverlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
-  loadingOverlay.style.display = 'flex';
-  loadingOverlay.style.justifyContent = 'center';
-  loadingOverlay.style.alignItems = 'center';
-  loadingOverlay.style.zIndex = '9999';
-  loadingOverlay.innerHTML = `<div style="border:6px solid #f3f3f3; border-top:6px solid #3498db; border-radius:50%; width:50px; height:50px; animation:spin 1s linear infinite;"></div>`;
-  document.body.appendChild(loadingOverlay);
+        // clear cart
+        cart.length = 0;
+        localStorage.setItem('cart', JSON.stringify(cart));
+        window.location.href = "thank-you.html";
 
-  const style = document.createElement('style');
-  style.innerHTML = `
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-  `;
-  document.head.appendChild(style);
-
-  // Calculate totals including quantity
-  let subtotal = 0;
-  cart.forEach(item => {
-    const qty = item.qty || 1;
-    subtotal += item.price * qty;
-  });
-
-  const shippingFee = 10;
-  const appliedShipping = cart.length > 0 ? shippingFee : 0;
-  const totalWithShipping = subtotal + appliedShipping;
-
-  // Create order summary including qty, size, and total for each item
-  const cartSummary = cart.map(item => {
-    const qty = item.qty || 1;
-    const totalItemPrice = item.price * qty;
-    // ⭐ ADDED SIZE LOGIC HERE ⭐
-    const productSize = item.size && item.size.trim() !== '' ? item.size : 'N/A';
-    // ⭐ UPDATED RETURN STRING TO INCLUDE SIZE ⭐
-    return `${item.name} (${item.category}) - Size: ${productSize} - Qty: ${qty} - Total: R${totalItemPrice.toFixed(2)}`;
-  }).join('\n');
-
-  const templateParams = {
-    customer_name: customerName,
-    customer_email: customerEmail,
-    customer_phone: customerPhone,
-    order_items: cartSummary,
-    subtotal: `R${subtotal.toFixed(2)}`,
-    shipping_fee: `R${appliedShipping.toFixed(2)}`,
-    total_amount: `R${totalWithShipping.toFixed(2)}`,
-    order_number: Date.now(),
-    payment_info: `
-       Welcome To The Sneaker Stud! 
-
-You Then Make A Payment That Includes The Shipping Amount. 
-
-Paxi: 
-We Use The Large Bag. 
-
-3-5 days - R150
-7-9 days - R120 
-
-You May Also Choose Any Courier Of Your Choice.
-
-Account details
-Bank name:  Standard Bank
-Branch name:    ROSEBANK            
-Branch code:    4305
-Account holder: THE DIRECTOR KWAKHANYA EZWENI PTY LTD KWAKHANYA EZWENI PTY LTD
-Account number: 10 20 110 974 1
-Account type:   CURRENT
-
-Please Use Your Name As Your Reference. 
-If You Are Going To Deposit Into A Standard Bank ATM, Please Add R10 For Charges. 
-
-Once You Have Made Payment , Please Send Your Proof Of Payment Along With Your Pep Code. 
-
-Once This Has Been Done Please Give Us A Minimum Of 3 Business Days To Ship Your Sneaker. 
-
-We Look Forward To Doing Business With You.
-    `
-  };
-
-  emailjs.send('service_n6cw895', 'template_vzwck3k', templateParams)
-    .then(() => {
-      alert(`🎉 Thank you ${customerName}! Your order has been confirmed. An Invoice has been sent to ${customerEmail}.`);
-
-      cart.length = 0;
-      localStorage.setItem('cart', JSON.stringify(cart));
-      updateCartDisplay();
-      location.reload(); // Refresh page
-    })
-    .catch(error => {
-      console.error('Checkout Error:', error);
-      alert('Checkout failed: Could not send confirmation email.');
-    })
-    .finally(() => {
-      loadingOverlay.remove();
-      style.remove();
-    });
+    } catch (error) {
+        console.error(error);
+        alert("Error sending email.");
+    }
 }
+
+/*
+    IMPORTANT: You must ensure this function is attached to the form's submit event:
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const checkoutForm = document.getElementById('checkout-form');
+        if (checkoutForm) {
+            checkoutForm.addEventListener('submit', handleFormSubmission);
+        }
+    });
+*/
 // Attach listener (with fallback selectors)
 function attachCheckoutListener() {
   const checkoutButton =
